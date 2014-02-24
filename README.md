@@ -20,5 +20,5 @@ For information on Connect SDK, visit [connectsdk.com/about](http://www.connects
 
 To update the plugin to the latest version, run
 
-  cordova plugin rm com.connectsdk.cordova.plugin
-  cordova plugin add https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin.git
+    cordova plugin rm com.connectsdk.cordova.plugin
+    cordova plugin add https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin.git
