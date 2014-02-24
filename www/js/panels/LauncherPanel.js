@@ -25,20 +25,6 @@ enyo.kind({
         {from: ".$.apps", to: ".$.appList.collection"}
     ],
     
-    tabActivated: function (sender, event) {
-        if (!event.originator || !event.originator.active) {
-            return true;
-        }
-        
-        var panelName = event.originator.panelName;
-        
-        if (panelName && this.$.panels.getActive().name !== panelName) {
-            this.$.panels.selectPanelByName(panelName);
-        }
-        
-        return true;
-    },
-    
     deviceChanged: function () {
         if (this.device) {
             this.device.getLauncher().getAppList().complete(

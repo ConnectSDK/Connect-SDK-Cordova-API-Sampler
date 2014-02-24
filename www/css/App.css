@@ -56,3 +56,12 @@
     color: red;
     font-weight: bolder;
 }
+
+.channel-item > .channel-number {
+    display: inline-block;
+    width: 3em;
+}
+
+.channel-item > .channel-name {
+    display: inline-block;
+}

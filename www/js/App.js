@@ -82,7 +82,9 @@ enyo.kind({
         this.picker = navigator.ConnectSDK.discoveryManager.pickDevice();
         this.picker.success(this.bindSafely("pickerSuccess"));
         this.picker.error(function (err) {
-            this.app.showError(err);
+            if (err) {
+                this.app.showError(err);
+            }
         }, this);
     },
     

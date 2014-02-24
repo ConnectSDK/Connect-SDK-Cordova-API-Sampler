@@ -21,30 +21,42 @@ enyo.kind({
             {kind: "TabPanels", fit: true, components: [
                 {tabLabel: "Channels", components: [
                     {name: "channelList", kind: "enyo.DataList", components: [
-                        {kind: "onyx.Item", components: [
-                            {name: "channelName"}
+                        {kind: "onyx.Item", classes: "channel-item", ontap: "openChannel", components: [
+                            {name: "channelNumber", classes: "channel-number"},
+                            {name: "channelName", classes: "channel-name"}
                         ], bindings: [
+                            {from: ".model.number", to: ".$.channelNumber.content"},
                             {from: ".model.name", to: ".$.channelName.content"}
                         ]}
                     ]}
                 ]},
-                {tabLabel: "Current Channel", components: [
-                    {content: "TODO"},
+                {tabLabel: "Current Channel", classes: "padding", components: [
+                    {content: "Not implemented yet"},
                 ]}
             ]}
         ]}
     ],
     
     bindings: [
-        {from: "", to: ".$.channelList.collection"}
+        {from: ".channelList", to: ".$.channelList.collection"}
     ],
     
     deviceChanged: function () {
         if (this.device) {
             var tvControl = this.device.getTVControl();
             
-            tvControl.subscribeChannelInfo().success(this.bindSafely("updateChannelList"));
-            tvControl.getChannelList().success(this.bindSafely("updateCurrentChannel"));
+            // Subscribe to channel list
+            // Complete will be called on either success or failure
+            tvControl.getChannelList().complete(this.bindSafely("updateChannelList"));
+            
+            // Subscribe to current channel
+            // Note that we use success and error instead of complete
+            // since complete is not called for subscription updates.
+            tvControl.subscribeChannelInfo()
+                .success(this.bindSafely("updateCurrentChannel"))
+                .error(this.bindSafely(function () {
+                    this.app.showError(err);
+                }));
         }
     },
     
@@ -52,13 +64,30 @@ enyo.kind({
         this.currentChannel = channel;
         
         if (this.currentChannel) {
-            this.$.currentChannelInfo.setContent(this.currentChannel.name);
+            this.$.currentChannelInfo.setContent(this.currentChannel.number + " (" + this.currentChannel.name + ")");
         } else {
             this.$.currentChannelInfo.setContent("unknown");
         }
     },
     
-    updateChannelList: function (channels) {
+    updateChannelList: function (err, channels) {
+        if (err) {
+            this.app.showError(err);
+            return;
+        }
+        
+        channels.sort(function (a, b) {
+            if (a.majorNumber !== b.majorNumber) {
+                return a.majorNumber - b.majorNumber;
+            } else if (a.minorNumber !== b.minorNumber) {
+                return a.minorNumber - b.minorNumber;
+            } else {
+                return 0;
+            }
+        });
+        
+        // This will wrap the channel list into enyo.Model instances
+        this.channelList.destroyAllLocal();
         this.channelList.reset(channels);
     },
 
@@ -68,5 +97,14 @@ enyo.kind({
     
     channelDown: function () {
         this.device && this.device.getTVControl().channelDown();
+    },
+    
+    openChannel: function (sender, event) {
+        var channelModel = this.channelList.at(event.index); // enyo.Model instance
+        var channel = channelModel.raw(); // raw JS object containing {id: ..., name: ...}
+        
+        this.device.getTVControl().setChannel(channel).success(this.bindSafely(function () {
+            this.app.showToast("Changing to channel " + channel.number);
+        }));
     }
 });
