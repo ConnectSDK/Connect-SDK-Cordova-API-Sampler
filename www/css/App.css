@@ -1,0 +1,58 @@
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.margin,.hmargin {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.margin,.vmargin {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.padded {
+    padding: 1em;
+}
+
+.indent {
+    margin-left: 1em;
+}
+
+@media (max-width: 800px) {
+    body {
+        font-size: 12px;
+    }
+    
+    .onyx-button {
+        font-size: 12px;
+    }
+    
+    .onyx-radiobutton.onyx-tabbutton {
+        font-size: 16px;
+    }
+    
+    .onyx-item {
+        font-size: 16px;
+    }
+}
+
+.result-error {
+    color: red;
+}
+
+.capability-supported {
+    color: green;
+    font-weight: bolder;
+}
+
+.capability-unsupported {
+    color: red;
+    font-weight: bolder;
+}
