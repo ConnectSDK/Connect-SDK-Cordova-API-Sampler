@@ -54,7 +54,7 @@ enyo.kind({
             // since complete is not called for subscription updates.
             tvControl.subscribeChannelInfo()
                 .success(this.bindSafely("updateCurrentChannel"))
-                .error(this.bindSafely(function () {
+                .error(this.bindSafely(function (err) {
                     this.app.showError(err);
                 }));
         }

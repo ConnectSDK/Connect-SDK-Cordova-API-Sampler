@@ -11,6 +11,7 @@ enyo.kind({
         {kind: "OverviewPanel"},
         {kind: "LauncherPanel"},
         {kind: "MediaPlayerPanel"},
+        {kind: "NavigationPanel"},
         {kind: "TVControlPanel"},
         {kind: "WebAppLauncherPanel"},
         {kind: "APIToolPanel"}
@@ -28,5 +29,8 @@ enyo.kind({
     
     bindings: [
         {from: ".app.$.deviceController.device", to: ".device"}
-    ]
+    ],
+    
+    deviceChanged: function () {
+    }
 });

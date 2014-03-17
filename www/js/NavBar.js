@@ -8,7 +8,8 @@ enyo.kind({
         {title: "Overview", panelName: "overviewPanel"},
         {title: "Launcher", panelName: "launcherPanel"},
         {title: "Media Player", panelName: "mediaPlayerPanel"},
-        {title: "TV Control", panelName: "tVControlPanel"},
+        {title: "Navigation", panelName: "navigationPanel"},
+        {title: "Channels", panelName: "tVControlPanel"},
         {title: "Web App", panelName: "webAppLauncherPanel"},
         {title: "API Tool", panelName: "aPIToolPanel"}
     ]

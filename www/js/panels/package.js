@@ -4,5 +4,6 @@ enyo.depends(
     "LauncherPanel.js",
     "WebAppLauncherPanel.js",
     "TVControlPanel.js",
+    "NavigationPanel.js",
     "APIToolPanel.js"
 );

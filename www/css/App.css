@@ -65,3 +65,10 @@
 .channel-item > .channel-name {
     display: inline-block;
 }
+
+.trackpad {
+    margin: 1em;
+    border: 1px solid gray;
+    border-radius: 3px;
+    background-color: lightgray;
+}

@@ -10,5 +10,6 @@ enyo.depends(
     "NavBar.js",
     "CapabilityPanels.js",
     "Widgets.js",
+    "AppControllers.js",
     "App.js"
 );

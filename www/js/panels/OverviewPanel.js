@@ -9,6 +9,7 @@ enyo.kind({
     },
     
     components: [
+        {name: "requestPairingCheckbox", kind: "CheckboxWithLabel", content: "Request capabilities that may require pairing", checked: true, style: "margin-bottom: 1em"},
         {components: [
             {tag: "span", content: "State: "},
             {tag: "span", name: "state", content: "Not connected"}
@@ -26,7 +27,9 @@ enyo.kind({
     ],
     
     bindings: [
-        {from: ".app.$.deviceController.device", to: ".device"}
+        // This is tied to DiscoveryController.requestPairingChanged in AppControllers.js
+        {from: ".app.$.discoveryController.requestPairing",
+         to: ".$.requestPairingCheckbox.checked", oneway: false}
     ],
     
     deviceChanged: function () {
