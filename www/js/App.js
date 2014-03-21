@@ -8,7 +8,12 @@ enyo.kind({
     components: [
         {name: "deviceController", kind: "ConnectableDeviceController"},
         {name: "discoveryController", kind: "DiscoveryManagerController"},
+        {name: "sessionController", kind: "SessionController"},
         {kind: "enyo.Signals", onbackbutton: "handleBack"}
+    ],
+    
+    bindings: [
+        {from: ".$.deviceController.device", to: ".device"}
     ],
     
     start: function () {

@@ -111,3 +111,31 @@ enyo.kind({
         this.setConnected(false);
     }
 });
+
+// Keeps track of recent launch sessions
+enyo.kind({
+    name: "SessionController",
+    
+    published: {
+        sessions: null
+    },
+    
+    bindings: [
+        {from: ".app.$.deviceController.device", to: ".device"}
+    ],
+    
+    create: function () {
+        this.inherited(arguments);
+        
+        this.sessions = new enyo.Collection();
+        this.webApps = {};
+    },
+    
+    deviceChanged: function () {
+        this.sessions.reset();
+    },
+    
+    addWebAppSession: function (id, session) {
+        this.webApps[id] = session;
+    }
+});
