@@ -3,6 +3,10 @@
     display: block;
 }
 
+.disabled {
+    opacity: 0.5;
+}
+
 .inline-block {
     display: inline-block;
 }
@@ -71,4 +75,10 @@
     border: 1px solid gray;
     border-radius: 3px;
     background-color: lightgray;
+}
+
+.message-direction-label {
+    font-weight: bold;
+    width: 4ex;
+    margin-right: 1em;
 }

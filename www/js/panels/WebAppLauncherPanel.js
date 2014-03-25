@@ -2,6 +2,8 @@ enyo.kind({
     name: "WebAppLauncherPanel",
     kind: "CapabilityPanel",
     
+    layoutKind: "enyo.FittableRowsLayout",
+    
     controlClasses: "margin",
     
     published: {
@@ -16,7 +18,7 @@ enyo.kind({
                 {name: "launchButton", kind: "onyx.Button", content: "Launch", ontap: "launchWebApp"}
             ]},
         ]},
-        {kind: "WebAppSessionView"}
+        {kind: "WebAppSessionView", fit: true}
     ],
          
     bindings: [
@@ -40,6 +42,7 @@ enyo.kind({
             this.device.getWebAppLauncher().launchWebApp(this.webAppId).success(function (session) {
                 this.$.webAppSessionView.setWebAppId(this.webAppId);
                 this.$.webAppSessionView.setSession(session);
+                this.resized();
                 
                 // Track history for sessions panel
                 this.app.$.sessionController.addWebAppSession(this.webAppId, session);
@@ -52,6 +55,8 @@ enyo.kind({
         
 enyo.kind({
     name: "WebAppSessionView",
+    kind: "onyx.Groupbox",
+    layoutKind: "enyo.FittableRowsLayout",
         
     showing: false,
         
@@ -61,35 +66,45 @@ enyo.kind({
     },
         
     components: [
-        {kind: "onyx.Groupbox", components: [
-            {name: "appName", kind: "onyx.GroupboxHeader"},
-            {controlClasses: "margin", components: [
-                {name: "connectButton", kind: "onyx.Button"},
-                {name: "clearLogButton", kind: "onyx.Button", content: "Clear Log", ontap: "clearLog"},
-                {kind: "onyx.Button", content: "Close", ontap: "close"}
-            ]},
-            {kind: "FittableInputDecorator", components: [
-                {name: "input", kind: "onyx.Input", fit: true},
-                {kind: "onyx.Button", content: "Send", ontap: "sendMessage"}
+        {name: "appName", kind: "onyx.GroupboxHeader"},
+        {controlClasses: "margin", components: [
+            {name: "connectButton", kind: "onyx.Button"},
+            {name: "clearLogButton", kind: "onyx.Button", content: "Clear Log", ontap: "clearLog"},
+            {kind: "onyx.Button", content: "Close", ontap: "close"}
+        ]},
+        {name: "sendBox", kind: "FittableInputDecorator", showing: false, components: [
+            {name: "input", kind: "onyx.Input", fit: true},
+            {kind: "onyx.Button", content: "Send", ontap: "sendMessage"}
+        ]},
+        {name: "messageList", fit: true, kind: "enyo.DataList", components: [
+            {kind: "onyx.Item", components: [
+                {name: "direction", classes: "message-direction-label inline-block"},
+                {name: "messageText", classes: "inline-block"}
+            ], bindings: [
+                {from: ".model.messageText", to: ".$.messageText.content"},
+                {from: ".model.direction", to: ".$.direction.content"}
             ]}
         ]},
+        {name: "messages", kind: "enyo.Collection"}
     ],
           
     bindings: [
-        {from: ".webAppId", to: ".$.appName.content"}
+        {from: ".webAppId", to: ".$.appName.content"},
+        {from: ".$.messages", to: ".$.messageList.collection"}
     ],
         
     sessionChanged: function (oldSession) {
         if (oldSession) {
             oldSession.off("message", null, this); // remove listener
+            oldSession.release(); // free memory
         }
         
         if (this.session) {
+            this.session.acquire();
             this.session.on("message", this.bindSafely("handleMessage"), this);
             
             this.resetConnectButton();
             this.show();
-            this.resized();
         } else {
             this.hide();
         }
@@ -98,19 +113,26 @@ enyo.kind({
     resetConnectButton: function () {
         this.$.connectButton.setContent("Connect");
         this.$.connectButton.set("ontap", "connect");
+        this.$.sendBox.hide();
     },
         
     connect: function () {
         this.$.connectButton.setContent("Connecting ...");
         this.$.connectButton.set("ontap", "disconnect");
         
-        this.session.connect().success(function () {
-            console.log("connected to app");
-            this.$.connectButton.setContent("Disconnect");
-            this.$.connectButton.set("ontap", "disconnect");
-        }, this).error(function (err) {
-            this.resetConnectButton();
-        }, this);
+        this.session.connect()
+            .success(this.bindSafely("connected"), this)
+            .error(function (err) {
+                this.resetConnectButton();
+            }, this);
+    },
+        
+    connected: function () {
+        console.log("connected to app");
+        this.$.connectButton.setContent("Disconnect");
+        this.$.connectButton.set("ontap", "disconnect");
+        this.$.sendBox.show();
+        this.resized();
     },
         
     disconnect: function () {
@@ -128,10 +150,36 @@ enyo.kind({
     sendMessage: function () {
         var text = this.$.input.getValue();
         
+        console.log("sending message: " + text);
         this.session.sendText(text);
+        
+        this.logMessage(text, {direction: "out"});
+    },
+        
+    logMessage: function (message, props) {
+        var model = new enyo.Model();
+        
+        model.set(props);
+        model.set("message", message);
+        
+        if (typeof message === 'string') {
+            model.set("type", "string");
+            model.set("messageText", message);
+        } else {
+            model.set("type", "object");
+            model.set("messageText", JSON.stringify(message, null, "  "));
+        }
+        
+        this.$.messages.add(model, 0); // insert at beginning
+    },
+        
+    clearLog: function () {
+        this.$.messages.destroyAll();
     },
     
     handleMessage: function (message) {
-        console.log("got message");
+        console.log("got message: " + message);
+        
+        this.logMessage(message, {direction: "in"});
     }
 });

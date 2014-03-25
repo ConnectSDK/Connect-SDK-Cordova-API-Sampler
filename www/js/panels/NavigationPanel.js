@@ -97,14 +97,14 @@ enyo.kind({
         return true;
     },
     
-    sendKey: function (key) {
+    sendKey: function (methodName) {
         if (!this.device) {
             return;
         }
         
-        var fiveway = this.device.getFivewayControl();
+        var keyControl = this.device.getKeyControl();
         
-        fiveway[key].call(fiveway);
+        keyControl[methodName]();
     },
     
     handleButton: function (sender, event) {

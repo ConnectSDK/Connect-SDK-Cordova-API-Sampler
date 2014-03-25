@@ -21,7 +21,8 @@ enyo.kind({
     
     published: {
         title: "",
-        panelKind: null
+        panelKind: null,
+        capabilities: null
     },
     
     events: {
@@ -33,7 +34,8 @@ enyo.kind({
     ],
     
     bindings: [
-        {from: ".title", to: ".$.title.content"}
+        {from: ".title", to: ".$.title.content"},
+        {from: ".app.$.deviceController.device", to: ".device"}
     ],
     
     tap: function (sender, event) {

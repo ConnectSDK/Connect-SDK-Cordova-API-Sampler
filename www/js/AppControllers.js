@@ -68,6 +68,8 @@ enyo.kind({
         if (device) {
             device.on("ready", this.deviceConnected, this);
             device.on("disconnect", this.deviceDisconnected, this);
+            
+            console.log("connecting to device: ", device.getFriendlyName());
             device.connect();
         }
         
@@ -96,6 +98,7 @@ enyo.kind({
         
         if (pendingDevice) {
             try {
+                // Make this the current connected device
                 this.setDevice(pendingDevice);
             } catch (e) {
                 console.error(e);
