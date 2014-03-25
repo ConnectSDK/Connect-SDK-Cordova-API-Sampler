@@ -4,11 +4,39 @@ enyo.kind({
     
     components: [
         {kind: "enyo.Scroller", classes: "enyo-fit", controlClasses: "margin", components: [
-            {kind: "MediaPlayerLauncher", heading: "Show Image", command: "displayImage", capability: "MediaPlayer.Display.Image", url: "http://www.spacex.com/sites/spacex/files/styles/media_gallery_large/public/ghopper_325_1.png"
+            // Image launcher form
+            {kind: "MediaPlayerLauncher",
+             heading: "Show Image", command: "displayImage", capability: "MediaPlayer.Display.Image",
+             onLaunch: "handleImageLaunch",
+             url: "http://www.spacex.com/sites/spacex/files/styles/media_gallery_large/public/ghopper_325_1.png"
             },
-            {kind: "MediaPlayerLauncher", heading: "Show Video", command: "displayVideo", capability: "MediaPlayer.Display.Video"}
+            
+            // Controls for last image launched
+            {name: "imageLaunchSessionView", kind: "LaunchSessionView", title: "Image LaunchSession"},
+            
+            // Video launcher form
+            {kind: "MediaPlayerLauncher",
+             heading: "Show Video", command: "playMedia",
+             capability: "MediaPlayer.Display.Video",
+             onLaunch: "handleVideoLaunch",
+             url: "http://archive.org/download/dmbb33715/dmbb33715.mp4"},
+            
+            // Controls for last video launched
+            {name: "videoLaunchSessionView", kind: "LaunchSessionView", title: "Video LaunchSession"},
         ]}
-    ]
+    ],
+    
+    handleImageLaunch: function (sender, event) {
+        var launchSession = event.launchSession.acquire();
+        
+        this.$.imageLaunchSessionView.setLaunchSession(launchSession);
+    },
+    
+    handleVideoLaunch: function (sender, event) {
+        var launchSession = event.launchSession.acquire();
+        
+        this.$.videoLaunchSessionView.setLaunchSession(launchSession);
+    }
 });
 
 enyo.kind({
@@ -20,7 +48,12 @@ enyo.kind({
         heading: "Show Media",
         command: "",
         capability: "",
-        url: ""
+        url: "",
+        mimeType: ""
+    },
+    
+    events: {
+        onLaunch: ""
     },
     
     components: [
@@ -28,6 +61,9 @@ enyo.kind({
             {name: "heading", kind: "HeaderWithCapability"},
             {kind: "FittableInputDecorator", components: [
                 {name: "url", kind: "onyx.Input", fit: true, placeholder: "URL"}
+            ]},
+            {kind: "FittableInputDecorator", components: [
+                {name: "mimeType", kind: "onyx.Input", fit: true, placeholder: "MIME Type"}
             ]},
             {kind: "onyx.GroupboxHeader", content: "Optional Parameters"},
             {kind: "FittableInputDecorator", components: [
@@ -48,12 +84,13 @@ enyo.kind({
         {from: ".heading", to: ".$.heading.content"},
         {from: ".heading", to: ".$.showButton.content"},
         {from: ".url", to: ".$.url.value", oneWay: false},
+        {from: ".mimeType", to: ".$.mimeType.value", oneWay: false},
         {from: ".notReady", to: ".$.showButton.disabled"},
         {from: ".capability", to: ".$.heading.capability"}
     ],
          
     computed: {
-        notReady: ["url"]
+        notReady: ["url", "mimeType"]
     },
           
     create: function () {
@@ -61,12 +98,43 @@ enyo.kind({
         if (this.command === "displayImage") {
             this.$.shouldLoop.hide();
         }
+    
+        this.urlChanged();
+    },
+        
+    extensionMap: {
+        "jpg": "image/jpeg",
+        "png": "image/png",
+        "gif": "image/gif",
+        "mp4": "video/mp4",
+        "mpeg": "video/mpeg",
+        "avi": "video/avi",
+        "webm": "video/webm",
+        "ogv": "video/ogg"
+    },
+        
+    urlChanged: function () {
+        if (this.url) {
+            var mimeType = "";
+            
+            if (this.url) {
+                var m = this.url.match(/.(\w+)$/);
+                
+                if (m && m[1]) {
+                    var extension = m[1].toLowerCase();
+                    
+                    mimeType = this.extensionMap[extension] || "";
+                }
+            }
+            
+            this.set("mimeType", mimeType);
+        }
     },
          
     showMedia: function () {
         var device = this.app.$.deviceController.getDevice();
         
-        var mimeType = "";
+        var mimeType = this.mimeType;
         
         var options = {
             title: this.$.title.getValue(),
@@ -75,14 +143,60 @@ enyo.kind({
         };
         
         var req = device.getMediaPlayer()[this.command](this.url, mimeType, options);
-        req.success(function () {
+        req.success(function (launchSession) {
             this.app.showToast("Showing media ...");
+            
+            this.doLaunch({launchSession: launchSession});
         }, this).error(function (err) {
             this.app.showError(err);
         }, this);
     },
          
     notReady: function () {
-        return !this.url;
+        return !this.url || !this.mimeType;
+    }
+});
+
+enyo.kind({
+    name: "LaunchSessionView",
+    kind: "onyx.Groupbox",
+        
+    showing: false,
+    
+    published: {
+        title: "",
+        launchSession: null
+    },
+    
+    components: [
+        {name: "title", kind: "onyx.GroupboxHeader"},
+        {kind: "enyo.FittableColumns", components: [
+            {fit: true},
+            {kind: "onyx.Button", content: "Close", ontap: "close"}
+        ]}
+    ],
+         
+    bindings: [
+        {from: ".title", to: ".$.title.content"}
+    ],
+    
+    launchSessionChanged: function (old) {
+        if (old) {
+            old.release();
+        }
+          
+        if (this.launchSession) {
+            this.launchSession.acquire();
+            this.show();
+        } else {
+            this.hide();
+        }
+        
+        this.resized();
+    },
+    
+    close: function () {
+        this.launchSession.close();
+        this.setLaunchSession(null);
     }
 });

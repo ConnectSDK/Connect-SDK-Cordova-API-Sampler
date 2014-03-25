@@ -43,9 +43,6 @@ enyo.kind({
                 this.$.webAppSessionView.setWebAppId(this.webAppId);
                 this.$.webAppSessionView.setSession(session);
                 this.resized();
-                
-                // Track history for sessions panel
-                this.app.$.sessionController.addWebAppSession(this.webAppId, session);
             }, this);
             
             localStorage.setItem("lastWebAppId", this.webAppId);

@@ -43,7 +43,7 @@ enyo.kind({
         var appId = app && app.get("id");
         
         if (appId) {
-            this.device.getLauncher().launchApplication(appId).success(function () {
+            this.device.getLauncher().launchApp(appId).success(function () {
                 this.app.showMessage("Success", "Launched " + appId);
             }, this).error(function (err) {
                 this.app.showError(err);
