@@ -41,8 +41,7 @@ enyo.kind({
         ]}
     ],
          
-    deviceChanged: function () {
-        this.inherited(arguments);
+    deviceDisconnected: function (device) {
         this.mouseConnected = false;
     },
     

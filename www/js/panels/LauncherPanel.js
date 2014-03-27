@@ -24,19 +24,13 @@ enyo.kind({
     bindings: [
         {from: ".$.apps", to: ".$.appList.collection"}
     ],
-    
-    deviceChanged: function () {
-        if (this.device) {
-            this.device.getLauncher().getAppList().complete(
-                this.bindSafely("handleAppListResponse")
-            );
-        }
-    },
-    
-    handleAppListResponse: function (error, data) {
-        this.$.apps.reset(data);
-    },
         
+    deviceConnected: function (device) {
+        device.getLauncher().getAppList().complete(function (err, data) {
+            this.$.apps.reset(data || []);
+        }, this);
+    },
+     
     launchApp: function (sender, event) {
         var app = this.$.apps.at(event.index);
         
@@ -71,10 +65,15 @@ enyo.kind({
     components: [
         {kind: "onyx.Button", ontap: "launch", components: [
             {name: "title"},
+            
+            // Shows whether device supports launching this app
             {name: "support", kind: "CapabilitySupport", short: true, style: "margin-left: 0.5em"}
         ]},
         {kind: "onyx.InputDecorator", layoutKind: "enyo.FittableColumnsLayout", classes: "indent hmargin", fit: true, components: [
+            // Input field for contentId/URL
             {name: "param", kind: "onyx.Input", fit: true},
+            
+            // Shows whether device supports deep-linking this app (launching with params)
             {name: "paramSupport", kind: "CapabilitySupport", short: true}
         ]}
     ],
@@ -107,7 +106,7 @@ enyo.kind({
         
         request.success(function () {
             this.app.showMessage("success", "Launched");
-        }).error(function (err) {
+        }, this).error(function (err) {
             this.app.showError(err);
         }, this);
         

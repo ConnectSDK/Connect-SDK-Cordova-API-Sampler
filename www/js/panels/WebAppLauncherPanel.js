@@ -118,7 +118,7 @@ enyo.kind({
         this.$.connectButton.set("ontap", "disconnect");
         
         this.session.connect()
-            .success(this.bindSafely("connected"), this)
+            .success(this.connected, this)
             .error(function (err) {
                 this.resetConnectButton();
             }, this);

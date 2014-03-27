@@ -15,16 +15,15 @@ enyo.kind({
     },
     
     requestPairingChanged: function () {
+        // restart discovery with new setting
         this.stopDiscovery();
         this.startDiscovery();
     },
     
     startDiscovery: function () {
-        if (navigator.ConnectSDK) {
-            var PairingLevel = navigator.ConnectSDK.PairingLevel;
-            
+        if (window.ConnectSDK) {
             navigator.ConnectSDK.discoveryManager.startDiscovery({
-                pairingLevel: this.requestPairing ? PairingLevel.ON : PairingLevel.OFF
+                pairingLevel: this.requestPairing ? ConnectSDK.PairingLevel.ON : ConnectSDK.PairingLevel.OFF
             });
         } else {
             console.error("startDiscovery: navigator.ConnectSDK not available");
@@ -32,17 +31,31 @@ enyo.kind({
     },
     
     stopDiscovery: function () {
-        if (navigator.ConnectSDK) {
-            navigator.ConnectSDK.discoveryManager.stopDiscovery();
+        if (window.ConnectSDK) {
+            ConnectSDK.discoveryManager.stopDiscovery();
         }
     },
     
     showPicker: function () {
-        this.picker = navigator.ConnectSDK.discoveryManager.pickDevice();
-        this.picker.success(this.bindSafely("pickerSuccess"));
+        if (!window.ConnectSDK) {
+            this.app.showAlertPopup({
+                title: "Unable to show picker",
+                message: "Connect SDK plugin not available"
+            });
+            
+            return;
+        }
+        
+        this.picker = ConnectSDK.discoveryManager.pickDevice();
+        
+        this.picker.success(this.pickerSuccess, this);
         this.picker.error(function (err) {
             if (err) {
+                console.log("picker error: " + JSON.stringify(err));
                 this.app.showError(err);
+            } else {
+                // if err is undefined, then picker was cancelled
+                console.log("picker cancelled");
             }
         }, this);
     },
@@ -99,6 +112,8 @@ enyo.kind({
         if (pendingDevice) {
             try {
                 // Make this the current connected device
+                // This will also update any components that are observing
+                // this controller's .device property.
                 this.setDevice(pendingDevice);
             } catch (e) {
                 console.error(e);

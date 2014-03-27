@@ -6,8 +6,8 @@ enyo.kind({
         {kind: "enyo.Scroller", classes: "enyo-fit", controlClasses: "margin", components: [
             // Image launcher form
             {kind: "MediaPlayerLauncher",
-             heading: "Show Image", command: "displayImage", capability: "MediaPlayer.Display.Image",
-             onLaunch: "handleImageLaunch",
+             heading: "Show Image", type: "image", capability: "MediaPlayer.Display.Image",
+             onMediaLaunch: "handleImageLaunch",
              url: "http://www.spacex.com/sites/spacex/files/styles/media_gallery_large/public/ghopper_325_1.png"
             },
             
@@ -16,9 +16,9 @@ enyo.kind({
             
             // Video launcher form
             {kind: "MediaPlayerLauncher",
-             heading: "Show Video", command: "playMedia",
+             heading: "Show Video", type: "media",
              capability: "MediaPlayer.Display.Video",
-             onLaunch: "handleVideoLaunch",
+             onMediaLaunch: "handleVideoLaunch",
              url: "http://archive.org/download/dmbb33715/dmbb33715.mp4"},
             
             // Controls for last video launched
@@ -45,15 +45,15 @@ enyo.kind({
     style: "margin-bottom: 1em",
     
     published: {
+        type: "",
         heading: "Show Media",
-        command: "",
         capability: "",
         url: "",
         mimeType: ""
     },
     
     events: {
-        onLaunch: ""
+        onMediaLaunch: ""
     },
     
     components: [
@@ -117,6 +117,8 @@ enyo.kind({
         if (this.url) {
             var mimeType = "";
             
+            // Guess mimeType based on the url (note that not all urls have extensions)
+            // Fills in mimeType input field with guess
             if (this.url) {
                 var m = this.url.match(/.(\w+)$/);
                 
@@ -132,8 +134,6 @@ enyo.kind({
     },
          
     showMedia: function () {
-        var device = this.app.$.deviceController.getDevice();
-        
         var mimeType = this.mimeType;
         
         var options = {
@@ -142,17 +142,26 @@ enyo.kind({
             shouldLoop: this.$.shouldLoop.getChecked()
         };
         
-        var req = device.getMediaPlayer()[this.command](this.url, mimeType, options);
+        var req;
+        
+        if (type === "image") {
+            req = this.device.getMediaPlayer().displayImage(this.url, mimeType, options);
+        } else {
+            req = this.device.getMediaPlayer().playMedia(this.url, mimeType, options);
+        }
+        
         req.success(function (launchSession) {
             this.app.showToast("Showing media ...");
             
-            this.doLaunch({launchSession: launchSession});
+            // Broadcast event with launchSession so the main panel can show the media controls
+            this.doMediaLaunch({launchSession: launchSession});
         }, this).error(function (err) {
             this.app.showError(err);
         }, this);
     },
          
     notReady: function () {
+        // Disable show button if url or mimeType is missing
         return !this.url || !this.mimeType;
     }
 });
@@ -182,6 +191,7 @@ enyo.kind({
     
     launchSessionChanged: function (old) {
         if (old) {
+            // clean up old launchSession
             old.release();
         }
           

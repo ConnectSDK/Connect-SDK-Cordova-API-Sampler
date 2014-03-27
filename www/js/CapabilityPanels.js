@@ -31,6 +31,23 @@ enyo.kind({
         {from: ".app.$.deviceController.device", to: ".device"}
     ],
     
-    deviceChanged: function () {
+    // This gets called when the controller successfully connects to a device
+    // or when the device is disconnected
+    deviceChanged: function (old) {
+        if (old) {
+            this.deviceDisconnected(old);
+        }
+        
+        if (this.device) {
+            this.deviceConnected(this.device);
+        }
+    },
+    
+    // Stub for subkinds to override
+    deviceConnected: function () {
+    },
+    
+    // Stub for subkinds to override
+    deviceDisconnected: function () {
     }
 });

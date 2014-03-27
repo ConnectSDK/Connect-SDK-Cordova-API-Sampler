@@ -41,25 +41,21 @@ enyo.kind({
         {from: ".channelList", to: ".$.channelList.collection"}
     ],
     
-    deviceChanged: function () {
-        if (this.device) {
-            var tvControl = this.device.getTVControl();
-            
-            // Subscribe to channel list
-            // Complete will be called on either success or failure
-            tvControl.getChannelList().complete(this.bindSafely("updateChannelList"));
-            
-            // Subscribe to current channel
-            // Note that we use success and error instead of complete
-            // since complete is not called for subscription updates.
-            tvControl.subscribeCurrentChannel().success(this.bindSafely("updateCurrentChannel"))
-        }
+    deviceConnected: function (device) {
+        var tvControl = device.getTVControl();
+
+        // Subscribe to channel list
+        // Complete will be called on either success or failure
+        tvControl.getChannelList().complete(this.updateChannelList, this);
+
+        // Subscribe to current channel
+        tvControl.subscribeCurrentChannel().complete(this.updateCurrentChannel, this);
     },
     
-    updateCurrentChannel: function (channel) {
+    updateCurrentChannel: function (err, channel) {
         this.currentChannel = channel;
         
-        if (this.currentChannel) {
+        if (!err && this.currentChannel) {
             this.$.currentChannelInfo.setContent(this.currentChannel.number + " (" + this.currentChannel.name + ")");
         } else {
             this.$.currentChannelInfo.setContent("unknown");
@@ -99,8 +95,8 @@ enyo.kind({
         var channelModel = this.channelList.at(event.index); // enyo.Model instance
         var channel = channelModel.raw(); // raw JS object containing {id: ..., name: ...}
         
-        this.device.getTVControl().setChannel(channel).success(this.bindSafely(function () {
+        this.device.getTVControl().setChannel(channel).success(function () {
             this.app.showToast("Changing to channel " + channel.number);
-        }));
+        }, this);
     }
 });
