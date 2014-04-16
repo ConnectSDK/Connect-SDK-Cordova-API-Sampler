@@ -56,7 +56,7 @@ enyo.kind({
     layoutKind: "enyo.FittableRowsLayout",
         
     showing: false,
-        
+    
     published: {
         webAppId: "",
         session: null
@@ -99,18 +99,20 @@ enyo.kind({
         if (this.session) {
             this.session.acquire();
             this.session.on("message", this.bindSafely("handleMessage"), this);
+            this.session.on("disconnect", this.bindSafely("handleDisconnect"), this);
             
-            this.resetConnectButton();
+            this.resetConnectState();
             this.show();
         } else {
             this.hide();
         }
     },
         
-    resetConnectButton: function () {
+    resetConnectState: function () {
         this.$.connectButton.setContent("Connect");
         this.$.connectButton.set("ontap", "connect");
         this.$.sendBox.hide();
+        this.resized();
     },
         
     connect: function () {
@@ -120,7 +122,7 @@ enyo.kind({
         this.session.connect()
             .success(this.connected, this)
             .error(function (err) {
-                this.resetConnectButton();
+                this.resetConnectState();
             }, this);
     },
         
@@ -136,6 +138,10 @@ enyo.kind({
         this.session.disconnect();
     },
         
+    handleDisconnect: function () {
+        this.resetConnectState();
+    },
+        
     close: function () {
         this.session.close().success(function () {
             this.hide();
@@ -145,10 +151,25 @@ enyo.kind({
     },
     
     sendMessage: function () {
-        var text = this.$.input.getValue();
+        var text = this.$.input.getValue().trim();
         
         console.log("sending message: " + text);
-        this.session.sendText(text);
+        
+        // For the purposes of this tool, use sendJSON if the input looks like JSON
+        if (text.length >= 2 && text[0] === '{' && text[text.length - 1] === '}') {
+            var obj;
+            
+            try {
+                obj = JSON.parse(text);
+            } catch (e) {
+                this.app.showAlert({message: "Invalid JSON"});
+                return;
+            }
+            
+            this.session.sendJSON(obj);
+        } else {
+            this.session.sendText(text);
+        }
         
         this.logMessage(text, {direction: "out"});
     },

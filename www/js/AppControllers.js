@@ -38,10 +38,10 @@ enyo.kind({
     
     showPicker: function () {
         if (!window.ConnectSDK) {
-            this.app.showAlertPopup({
-                title: "Unable to show picker",
-                message: "Connect SDK plugin not available"
-            });
+            this.app.showMessage(
+                "Unable to show picker",
+                "Connect SDK plugin not available"
+            );
             
             return;
         }
@@ -81,6 +81,7 @@ enyo.kind({
         if (device) {
             device.on("ready", this.deviceConnected, this);
             device.on("disconnect", this.deviceDisconnected, this);
+            device.on("capabilitieschanged", this.deviceCapabilitiesChanged, this);
             
             console.log("connecting to device: ", device.getFriendlyName());
             device.connect();
@@ -89,6 +90,7 @@ enyo.kind({
         if (oldDevice && oldDevice !== device) {
             oldDevice.off("ready", this.deviceConnected, this);
             oldDevice.off("disconnect", this.deviceDisconnected, this);
+            old.off("capabilitieschanged", this.deviceCapabilitiesChanged, this);
         }
     },
     
@@ -102,6 +104,7 @@ enyo.kind({
         }
         
         this.setDevice(null);
+        this.setPendingDevice(null);
     },
     
     deviceConnected: function () {
@@ -127,5 +130,10 @@ enyo.kind({
         console.log("device disconnected");
         this.setDevice(null);
         this.setConnected(false);
+    },
+    
+    deviceCapabilitiesChanged: function () {
+        // TODO
+        enyo.Signals.send("onDeviceCapabilitiesChanged");
     }
 });

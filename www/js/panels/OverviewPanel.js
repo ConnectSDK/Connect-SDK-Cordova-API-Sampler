@@ -9,7 +9,7 @@ enyo.kind({
     },
     
     components: [
-        {name: "requestPairingCheckbox", kind: "CheckboxWithLabel", content: "Request capabilities that may require pairing", checked: true, style: "margin-bottom: 1em"},
+        {name: "requestPairingCheckbox", kind: "CheckboxWithLabel", content: "Pair if needed", checked: true, style: "margin-bottom: 1em"},
         {components: [
             {tag: "span", content: "State: "},
             {tag: "span", name: "state", content: "Not connected"}

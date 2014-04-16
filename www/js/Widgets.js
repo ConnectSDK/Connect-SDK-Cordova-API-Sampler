@@ -62,6 +62,8 @@ enyo.kind({
     components: [
         {name: "label", style: "margin-right: 1em"},
         {name: "status", showing: false},
+        
+        {kind: "enyo.Signals", onDeviceCapabilitiesChanged: "deviceCapabilitiesChanged"}
     ],
     
     bindings: [
@@ -92,6 +94,10 @@ enyo.kind({
     },
     
     capabilityChanged: function () {
+        this.update();
+    },
+    
+    deviceCapabilitiesChanged: function () {
         this.update();
     }
 });

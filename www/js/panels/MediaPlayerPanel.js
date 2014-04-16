@@ -12,7 +12,7 @@ enyo.kind({
             },
             
             // Controls for last image launched
-            {name: "imageLaunchSessionView", kind: "LaunchSessionView", title: "Image LaunchSession"},
+            {name: "imageLaunchSessionView", kind: "MediaSessionView", title: "Image LaunchSession"},
             
             // Video launcher form
             {kind: "MediaPlayerLauncher",
@@ -22,7 +22,7 @@ enyo.kind({
              url: "http://archive.org/download/dmbb33715/dmbb33715.mp4"},
             
             // Controls for last video launched
-            {name: "videoLaunchSessionView", kind: "LaunchSessionView", title: "Video LaunchSession"},
+            {name: "videoLaunchSessionView", kind: "MediaSessionView", title: "Video MediaControl"},
         ]}
     ],
     
@@ -33,8 +33,10 @@ enyo.kind({
     },
     
     handleVideoLaunch: function (sender, event) {
+        var mediaControl = event.mediaControl.acquire();
         var launchSession = event.launchSession.acquire();
         
+        this.$.videoLaunchSessionView.setMediaControl(mediaControl);
         this.$.videoLaunchSessionView.setLaunchSession(launchSession);
     }
 });
@@ -86,7 +88,8 @@ enyo.kind({
         {from: ".url", to: ".$.url.value", oneWay: false},
         {from: ".mimeType", to: ".$.mimeType.value", oneWay: false},
         {from: ".notReady", to: ".$.showButton.disabled"},
-        {from: ".capability", to: ".$.heading.capability"}
+        {from: ".capability", to: ".$.heading.capability"},
+        {from: ".app.$.deviceController.device", to: ".device"}
     ],
          
     computed: {
@@ -144,17 +147,17 @@ enyo.kind({
         
         var req;
         
-        if (type === "image") {
+        if (this.type === "image") {
             req = this.device.getMediaPlayer().displayImage(this.url, mimeType, options);
         } else {
             req = this.device.getMediaPlayer().playMedia(this.url, mimeType, options);
         }
         
-        req.success(function (launchSession) {
+        req.success(function (launchSession, mediaControl) {
             this.app.showToast("Showing media ...");
             
             // Broadcast event with launchSession so the main panel can show the media controls
-            this.doMediaLaunch({launchSession: launchSession});
+            this.doMediaLaunch({launchSession: launchSession, mediaControl: mediaControl});
         }, this).error(function (err) {
             this.app.showError(err);
         }, this);
@@ -167,13 +170,14 @@ enyo.kind({
 });
 
 enyo.kind({
-    name: "LaunchSessionView",
+    name: "MediaSessionView",
     kind: "onyx.Groupbox",
         
     showing: false,
     
     published: {
         title: "",
+        mediaControl: null,
         launchSession: null
     },
     
@@ -182,12 +186,32 @@ enyo.kind({
         {kind: "enyo.FittableColumns", components: [
             {fit: true},
             {kind: "onyx.Button", content: "Close", ontap: "close"}
-        ]}
+        ]},
+        {name: "mediaButtons", showing: false, components: [
+            {kind: "onyx.Button", content: "Play", ontap: "play"},
+            {kind: "onyx.Button", content: "Pause", ontap: "pause"},
+            {kind: "onyx.Button", content: "RW", ontap: "rewind"},
+            {kind: "onyx.Button", content: "FF", ontap: "fastForward"}
+        ]},
     ],
          
     bindings: [
         {from: ".title", to: ".$.title.content"}
     ],
+    
+    mediaControlChanged: function (old) {
+        if (old) {
+            // clean up old launchSession
+            old.release();
+        }
+          
+        if (this.mediaControl) {
+            this.mediaControl.acquire();
+            this.$.mediaButtons.show();
+        } else {
+            this.$.mediaButtons.hide();
+        }
+    },
     
     launchSessionChanged: function (old) {
         if (old) {
@@ -203,6 +227,22 @@ enyo.kind({
         }
         
         this.resized();
+    },
+    
+    play: function () {
+        this.mediaControl.play();
+    },
+    
+    pause: function () {
+        this.mediaControl.pause();
+    },
+    
+    rewind: function () {
+        this.mediaControl.rewind();
+    },
+    
+    fastForward: function () {
+        this.mediaControl.fastForward();
     },
     
     close: function () {
