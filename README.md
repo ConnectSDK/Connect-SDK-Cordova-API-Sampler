@@ -12,30 +12,7 @@ cordova 3.3.0+
 
 ## Setup
 
-0. Download and unzip or clone this sample app repository.
-1. cd Connect-SDK-Cordova-API-Sampler
-2. cordova plugin add https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin.git
-3. cordova platform add ios
-4. cordova platform add android
-
-## Extra steps for iOS
-
-1. Download Google Cast sender library from https://developers.google.com/cast/docs/downloads
-2. Unzip GoogleCastFramework-2.0-Release.zip
-3. Open the Xcode project in platforms/ios/
-4. From Finder, drag GoogleCast.framework from the unzipped directory onto the "Frameworks" group
-   of the Xcode project window; alternatively, control-click on Frameworks and select "Add files to"
-   and select GoogleCast.framework using the file dialog.
-5. Select/check the options for "Copy items into destination group's folder",
-   "Create groups for any added folders", and "Add to targets", and then hit "Finish"
-   (or "Add" if using the "Add files to" dialog).
-6. You should now be able to build the project from Xcode or from the command line. Make sure to
-   run "cordova prepare ios" after making changes in www when using Xcode.
-
-## Building and running
-
-    cordova build
-    cordova run --device
+Refer to https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin/
 
 ## Updating plugin
 
@@ -43,3 +20,13 @@ To update the plugin to the latest version, run
 
     cordova plugin rm com.connectsdk.cordova.plugin
     cordova plugin add https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin.git
+
+## License
+
+The following applies to files which refer to CC0 in the header:
+
+Connect SDK Sample App by LG Electronics
+
+To the extent possible under law, the person who associated CC0 with this sample app has waived all copyright and related or neighboring rights to the sample app.
+
+You should have received a copy of the CC0 legalcode along with this work. If not, see http://creativecommons.org/publicdomain/zero/1.0/.
