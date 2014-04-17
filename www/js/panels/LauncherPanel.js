@@ -16,7 +16,7 @@ enyo.kind({
     components: [
         {kind: "TabPanels", classes: "enyo-fit", components: [
             {tabLabel: "Common Apps", controlClasses: "margin", components: [
-                {kind: "LaunchContentButton", appName: "Browser", paramLabel: "URL"},
+                {kind: "LaunchContentButton", appName: "Browser", paramLabel: "URL", param: "http://"},
                 {kind: "LaunchContentButton", appName: "Hulu", paramLabel: "Content Id"},
                 {kind: "LaunchContentButton", appName: "Netflix", paramLabel: "Content Id"},
                 {kind: "LaunchContentButton", appName: "YouTube", paramLabel: "Content Id"},
@@ -82,7 +82,8 @@ enyo.kind({
         ]},
         {kind: "onyx.InputDecorator", layoutKind: "enyo.FittableColumnsLayout", classes: "indent hmargin", fit: true, components: [
             // Input field for contentId/URL
-            {name: "param", kind: "onyx.Input", fit: true},
+            {name: "param", kind: "onyx.Input", fit: true,
+             attributes: {autocomplete: "false", autocapitalize: "false"}},
             
             // Shows whether device supports deep-linking this app (launching with params)
             {name: "paramSupport", kind: "CapabilitySupport", short: true}

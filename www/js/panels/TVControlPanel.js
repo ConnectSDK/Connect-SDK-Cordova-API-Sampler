@@ -57,10 +57,14 @@ enyo.kind({
 
         // Subscribe to channel list
         // Complete will be called on either success or failure
-        tvControl.getChannelList().complete(this.updateChannelList, this);
+        if (this.device.supports("TVControl.Channel.List")) {
+            tvControl.getChannelList().complete(this.updateChannelList, this);
+        }
 
         // Subscribe to current channel
-        tvControl.subscribeCurrentChannel().complete(this.updateCurrentChannel, this);
+        if (this.device.supports("TVControl.Channel.Subscribe")) {
+            tvControl.subscribeCurrentChannel().complete(this.updateCurrentChannel, this);
+        }
     },
     
     updateCurrentChannel: function (err, channel) {

@@ -40,7 +40,7 @@ enyo.kind({
     bindings: [
         // This is tied to DiscoveryController.requestPairingChanged in AppControllers.js
         {from: ".app.$.discoveryController.requestPairing",
-         to: ".$.requestPairingCheckbox.checked", oneway: false}
+         to: ".$.requestPairingCheckbox.checked", oneWay: false}
     ],
     
     deviceChanged: function () {

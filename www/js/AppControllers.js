@@ -72,7 +72,13 @@ enyo.kind({
     },
     
     pickerSuccess: function (device) {
-        this.app.$.deviceController.setPendingDevice(device);
+        var deviceController = this.app.$.deviceController;
+        
+        if (deviceController.pendingDevice) {
+            deviceController.setPendingDevice(null);
+        }
+        
+        deviceController.setPendingDevice(device);
     }
 });
 
@@ -89,19 +95,24 @@ enyo.kind({
     pendingDeviceChanged: function (oldDevice) {
         var device = this.pendingDevice;
         
+        if (oldDevice) {
+            oldDevice.off("ready", this.deviceConnected, this);
+            oldDevice.off("disconnect", this.deviceDisconnected, this);
+            oldDevice.off("capabilitieschanged", this.deviceCapabilitiesChanged, this);
+        }
+        
         if (device) {
             device.on("ready", this.deviceConnected, this);
             device.on("disconnect", this.deviceDisconnected, this);
             device.on("capabilitieschanged", this.deviceCapabilitiesChanged, this);
             
-            console.log("connecting to device: ", device.getFriendlyName());
-            device.connect();
-        }
-        
-        if (oldDevice && oldDevice !== device) {
-            oldDevice.off("ready", this.deviceConnected, this);
-            oldDevice.off("disconnect", this.deviceDisconnected, this);
-            old.off("capabilitieschanged", this.deviceCapabilitiesChanged, this);
+            if (device.isReady()) {
+                console.log("device is already connected");
+                this.deviceConnected();
+            } else {
+                console.log("connecting to device: ", device.getFriendlyName());
+                device.connect();
+            }
         }
     },
     
