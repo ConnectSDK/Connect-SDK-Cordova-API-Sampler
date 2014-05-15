@@ -14,7 +14,8 @@ enyo.kind({
     kind: "enyo.Controller",
     
     published: {
-        requestPairing: true,
+        requestPairing: true, // if true, ask for capabilities that require pairing
+        autoConnect: true // if true, connect to last connected device on boot
     },
     
     create: function () {
@@ -23,19 +24,34 @@ enyo.kind({
         // FIXME: Cordova seems to have problems starting discovery in the same tick.
         // Need to investigate.
         this.startJob("startup", "startDiscovery", 0);
+        
+        this.justStartedApp = true;
+        
+        // Load settings
+        this.set("autoConnect", !!window.localStorage.getItem("autoConnect"));
+        this.set("requestPairing", !!window.localStorage.getItem("requestPairing"));
+        this.savedDeviceId = window.localStorage.getItem("lastDeviceId") || null;
     },
     
     requestPairingChanged: function () {
         // restart discovery with new setting
         this.stopDiscovery();
         this.startDiscovery();
+        
+        window.localStorage.setItem("requestPairing", this.requestPairing);
+    },
+    
+    autoConnectChanged: function () {
+        window.localStorage.setItem("autoConnect", this.autoConnect);
     },
     
     startDiscovery: function () {
         if (window.ConnectSDK) {
-            navigator.ConnectSDK.discoveryManager.startDiscovery({
+            ConnectSDK.discoveryManager.startDiscovery({
                 pairingLevel: this.requestPairing ? ConnectSDK.PairingLevel.ON : ConnectSDK.PairingLevel.OFF
             });
+            
+            ConnectSDK.discoveryManager.on("devicefound", this.deviceFound, this);
         } else {
             console.error("startDiscovery: navigator.ConnectSDK not available");
         }
@@ -44,10 +60,24 @@ enyo.kind({
     stopDiscovery: function () {
         if (window.ConnectSDK) {
             ConnectSDK.discoveryManager.stopDiscovery();
+            
+            ConnectSDK.discoveryManager.off("devicefound", this.deviceFound, this);
+        }
+    },
+    
+    deviceFound: function (device) {
+        console.log("device found: " + device.getId());
+        
+        if (this.justStartedApp && this.savedDeviceId && device.getId() === this.savedDeviceId) {
+            this.justStartedApp = false;
+            
+            this.app.$.deviceController.setPendingDevice(device);
         }
     },
     
     showPicker: function () {
+        this.justStartedApp = false;
+        
         if (!window.ConnectSDK) {
             this.app.showMessage(
                 "Unable to show picker",
@@ -78,7 +108,10 @@ enyo.kind({
             deviceController.setPendingDevice(null);
         }
         
+        console.log("selected device in picker");
         deviceController.setPendingDevice(device);
+        
+        window.localStorage.setItem("savedDeviceId", device.getId());
     }
 });
 
@@ -105,6 +138,8 @@ enyo.kind({
             device.on("ready", this.deviceConnected, this);
             device.on("disconnect", this.deviceDisconnected, this);
             device.on("capabilitieschanged", this.deviceCapabilitiesChanged, this);
+            
+            console.log("pending device changed");
             
             if (device.isReady()) {
                 console.log("device is already connected");

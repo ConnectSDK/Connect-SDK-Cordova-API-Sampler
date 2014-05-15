@@ -19,7 +19,7 @@ enyo.kind({
                 {kind: "LaunchContentButton", appName: "Browser", paramLabel: "URL", param: "http://"},
                 {kind: "LaunchContentButton", appName: "Hulu", paramLabel: "Content Id"},
                 {kind: "LaunchContentButton", appName: "Netflix", paramLabel: "Content Id"},
-                {kind: "LaunchContentButton", appName: "YouTube", paramLabel: "Content Id"},
+                {kind: "LaunchContentButton", appName: "YouTube", paramLabel: "Content Id", param: "ZwwS4YOTbbw"},
             ]},
             {tabLabel: "App List", name: "appList", kind: "enyo.DataList", classes: "enyo-fit", components: [
                 {kind: "onyx.Item", ontap: "launchApp", components: [

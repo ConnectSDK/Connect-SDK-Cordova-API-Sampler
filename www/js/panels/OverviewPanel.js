@@ -20,12 +20,17 @@ enyo.kind({
     },
     
     components: [
+        {name: "autoConnectCheckbox", kind: "CheckboxWithLabel", content: "Reconnect on start", checked: true, style: "margin-bottom: 1em"},
         {name: "requestPairingCheckbox", kind: "CheckboxWithLabel", content: "Pair if needed", checked: true, style: "margin-bottom: 1em"},
         {components: [
             {tag: "span", content: "State: "},
             {tag: "span", name: "state", content: "Not connected"}
         ]},
-        {name: "deviceInfo", components: [
+        {name: "deviceInfo", style: "margin-top: 1em", components: [
+            {components: [
+                {tag: "span", content: "Device Store ID: "},
+                {tag: "span", name: "deviceId"}
+            ]},
             {components: [
                 {tag: "span", content: "Model name: "},
                 {tag: "span", name: "modelName"}
@@ -40,7 +45,8 @@ enyo.kind({
     bindings: [
         // This is tied to DiscoveryController.requestPairingChanged in AppControllers.js
         {from: ".app.$.discoveryController.requestPairing",
-         to: ".$.requestPairingCheckbox.checked", oneWay: false}
+         to: ".$.requestPairingCheckbox.checked", oneWay: false},
+        {from: ".app.$.discoveryController.autoConnect", to: ".$.autoConnectCheckbox.checked", oneWay: false}
     ],
     
     deviceChanged: function () {
@@ -53,6 +59,7 @@ enyo.kind({
                 this.device.getFriendlyName() + " at " + this.device.getIPAddress());
             this.$.modelName.setContent(this.device.getModelName());
             this.$.modelNumber.setContent(this.device.getModelNumber());
+            this.$.deviceId.setContent(this.device.getId());
         } else {
             this.$.state.setContent("Not connected");
         }

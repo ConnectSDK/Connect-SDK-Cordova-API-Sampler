@@ -19,6 +19,7 @@ enyo.kind({
     },
 
     components: [
+        {kind: "RemoteTextInputArea"},
         {kind: "enyo.FittableRows", classes: "enyo-fit", components: [
             {kind: "enyo.Table", style: "width: 100%", components: [
                 {components: [
@@ -52,6 +53,10 @@ enyo.kind({
         ]}
     ],
          
+    bindings: [
+        {from: ".app.device", to: ".$.remoteTextInputArea.device"}
+    ],
+         
     deviceDisconnected: function (device) {
         this.mouseConnected = false;
     },
@@ -65,7 +70,7 @@ enyo.kind({
     },
          
     mouseTap: function () {
-        console.log("tapped");
+        console.log("tapped device=" + this.device + " dragged=" + this.dragged);
         if (this.device && !this.dragged) {
             console.log("sending click");
             this.checkMouse();
@@ -102,6 +107,7 @@ enyo.kind({
             this.device.getMouseControl().move(dx, dy);
         }
         
+        console.log("dragged");
         this.dragged = true;
         this.lastPos = pos;
         return true;
@@ -119,6 +125,124 @@ enyo.kind({
     
     handleButton: function (sender, event) {
         this.sendKey(event.key);
+    }
+});
+        
+enyo.kind({
+    name: "RemoteTextInputArea",
+    classes: "remote-text-input-area",
+    
+    showing: false,
+    
+    published: {
+        device: null
+    },
+        
+    components: [
+        {content: "Remote Text Entry"},
+        {kind: "onyx.InputDecorator", style: "width: 80%", components: [
+            {name: "input", kind: "enyo.Input", onkeydown: "handleKeyDown", onkeyup: "handleKeyUp", oninput: "handleInput"}
+        ]}
+    ],
+          
+    create: function () {
+        this.inherited(arguments);
+        this.currentText = "";
+    },
+        
+    handleKeyDown: function (sender, event) {
+        if (!this.currentText && (event.keyCode === 8 || event.keyCode == 46)) {
+            // Handle backspace when the field is empty
+            this.device.getTextInputControl().sendDelete();
+        } else if (event.keyCode === 13) {
+            this.device.getTextInputControl().sendEnter();
+        }
+    },
+    
+    handleKeyUp: function (sender, event) {
+        this.applyTextChanges();
+    },
+        
+    handleInput: function () {
+        this.applyTextChanges();
+    },
+        
+    applyTextChanges: function () {
+        var textInputControl = this.device.getTextInputControl();
+        var value = this.$.input.getValue();
+        
+        if (value === this.currentText) {
+            return;
+        }
+        
+        // Figure out what changed
+        // Fast path: characters added
+        if (value.length > this.currentText.length) {
+            if (value.substr(0, this.currentText.length) === this.currentText) {
+                // Some characters added
+                var added = value.substr(this.currentText.length);
+                
+                console.log("Adding text: " + added);
+                textInputControl.sendText(added);
+                
+                this.currentText = value;
+                return;
+            }
+        } else if (value.length === this.currentText.length - 1) {
+            if (value === this.currentText.substr(0, this.currentText.length - 1)) { // One char deleted
+                console.log("Deleting a character");
+                textInputControl.sendDelete();
+                
+                this.currentText = value;
+                return;
+            }
+        }
+        
+        console.log("Replacing '" + this.currentText + "' with '" + value + "'");
+        
+        // Larger change -- delete everything
+        for (var i = 0; i < this.currentText.length; i += 1) {
+            textInputControl.sendDelete();
+        }
+        
+        textInputControl.sendText(value);
+        this.currentText = value;
+    },
+        
+    close: function () {
+        this.$.input.setValue("");
+        this.blur();
+        this.hide();
+    },
+        
+    deviceChanged: function (oldDevice) {
+        if (this.device && this.device.supports("TextInputControl.Subscribe")) {
+            this.device.getTextInputControl().subscribeTextInputStatus().success(this.handleStatus, this);
+        } else {
+            this.close();
+        }
+    },
+        
+    handleStatus: function (status) {
+        if (status.isVisible) {
+            this.show();
+            
+            if (this.device.hasService(ConnectSDK.Services.WebOSTV) && status.rawData) {
+                // webOS-specific handling
+                var needReset = status.rawData.focusChanged;
+                var currentWidget = status.rawData.currentWidget;
+                
+                if (currentWidget && !currentWidget.focus) {
+                    needReset = true;
+                }
+                
+                if (needReset) {
+                    this.$.input.setValue("");
+                }
+            }
+        } else {
+            this.close();
+        }
     }
 });
         
