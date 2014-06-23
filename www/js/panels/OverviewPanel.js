@@ -22,6 +22,8 @@ enyo.kind({
     components: [
         {name: "autoConnectCheckbox", kind: "CheckboxWithLabel", content: "Reconnect on start", checked: true, style: "margin-bottom: 1em"},
         {name: "requestPairingCheckbox", kind: "CheckboxWithLabel", content: "Pair if needed", checked: true, style: "margin-bottom: 1em"},
+        {name: "airPlayMirror", kind: "CheckboxWithLabel", content: "Use AirPlay mirroring", checked: true, style: "margin-bottom: 1em"},
+        
         {components: [
             {tag: "span", content: "State: "},
             {tag: "span", name: "state", content: "Not connected"}
@@ -46,7 +48,8 @@ enyo.kind({
         // This is tied to DiscoveryController.requestPairingChanged in AppControllers.js
         {from: ".app.$.discoveryController.requestPairing",
          to: ".$.requestPairingCheckbox.checked", oneWay: false},
-        {from: ".app.$.discoveryController.autoConnect", to: ".$.autoConnectCheckbox.checked", oneWay: false}
+        {from: ".app.$.discoveryController.autoConnect", to: ".$.autoConnectCheckbox.checked", oneWay: false},
+        {from: ".app.$.discoveryController.airPlayMirror", to: ".$.airPlayMirror.checked", oneWay: false}
     ],
     
     deviceChanged: function () {

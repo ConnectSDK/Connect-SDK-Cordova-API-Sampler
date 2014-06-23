@@ -15,7 +15,8 @@ enyo.kind({
     
     published: {
         requestPairing: true, // if true, ask for capabilities that require pairing
-        autoConnect: true // if true, connect to last connected device on boot
+        autoConnect: true, // if true, connect to last connected device on boot,
+        airPlayMirror: true // if true, use mirroring for displaying content on AirPlay
     },
     
     create: function () {
@@ -30,6 +31,7 @@ enyo.kind({
         // Load settings
         this.set("autoConnect", !!window.localStorage.getItem("autoConnect"));
         this.set("requestPairing", !!window.localStorage.getItem("requestPairing"));
+        this.set("airPlayMirror", !!window.localStorage.getItem("airPlayMirror"));
         this.savedDeviceId = window.localStorage.getItem("lastDeviceId") || null;
     },
     
@@ -45,16 +47,30 @@ enyo.kind({
         window.localStorage.setItem("autoConnect", this.autoConnect);
     },
     
-    startDiscovery: function () {
-        if (window.ConnectSDK) {
-            ConnectSDK.discoveryManager.startDiscovery({
-                pairingLevel: this.requestPairing ? ConnectSDK.PairingLevel.ON : ConnectSDK.PairingLevel.OFF
-            });
-            
-            ConnectSDK.discoveryManager.on("devicefound", this.deviceFound, this);
-        } else {
-            console.error("startDiscovery: navigator.ConnectSDK not available");
+    airPlayMirrorChanged: function () {
+        window.localStorage.setItem("airPlayMirror", this.airPlayMirror);
+        
+        if (!window.ConnectSDK) {
+            return;
         }
+        
+        var mode = this.airPlayMirror ? ConnectSDK.AirPlayServiceMode.WEBAPP : ConnectSDK.AirPlayServiceMode.MEDIA;
+        ConnectSDK.discoveryManager.setAirPlayServiceMode(mode);
+    },
+    
+    startDiscovery: function () {
+        if (!window.ConnectSDK) {
+            console.error("startDiscovery: navigator.ConnectSDK not available");
+            return;
+        }
+        
+        ConnectSDK.discoveryManager.startDiscovery({
+            pairingLevel: this.requestPairing ? ConnectSDK.PairingLevel.ON : ConnectSDK.PairingLevel.OFF,
+            airPlayServiceMode: this.airPlayMirror ? ConnectSDK.AirPlayServiceMode.WEBAPP :
+                ConnectSDK.AirPlayServiceMode.MEDIA
+        });
+
+        ConnectSDK.discoveryManager.on("devicefound", this.deviceFound, this);
     },
     
     stopDiscovery: function () {
