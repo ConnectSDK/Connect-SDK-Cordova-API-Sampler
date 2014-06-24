@@ -26,36 +26,38 @@ enyo.kind({
         // Need to investigate.
         this.startJob("startup", "startDiscovery", 0);
         
+        this.inCreate = true;
         this.justStartedApp = true;
         
         // Load settings
-        this.set("autoConnect", !!window.localStorage.getItem("autoConnect"));
-        this.set("requestPairing", !!window.localStorage.getItem("requestPairing"));
-        this.set("airPlayMirror", !!window.localStorage.getItem("airPlayMirror"));
+        this.set("autoConnect", window.localStorage.getItem("autoConnect") !== "no");
+        this.set("requestPairing", window.localStorage.getItem("requestPairing") !== "no");
+        this.set("airPlayMirror", window.localStorage.getItem("airPlayMirror") !== "no");
         this.savedDeviceId = window.localStorage.getItem("lastDeviceId") || null;
+        
+        this.inCreate = false;
     },
     
     requestPairingChanged: function () {
-        // restart discovery with new setting
-        this.stopDiscovery();
-        this.startDiscovery();
-        
-        window.localStorage.setItem("requestPairing", this.requestPairing);
+        if (!this.inCreate) {
+            window.localStorage.setItem("requestPairing", this.requestPairing ? "yes" : "no");
+            this.restartDiscovery();
+        }
     },
     
     autoConnectChanged: function () {
-        window.localStorage.setItem("autoConnect", this.autoConnect);
+        if (!this.inCreate) {
+            window.localStorage.setItem("autoConnect", this.autoConnect ? "yes" : "no");
+        }
     },
     
     airPlayMirrorChanged: function () {
-        window.localStorage.setItem("airPlayMirror", this.airPlayMirror);
-        
-        if (!window.ConnectSDK) {
-            return;
+        if (!this.inCreate) {
+            window.localStorage.setItem("airPlayMirror", this.airPlayMirror ? "yes" : "no");
+            
+            // SDK currently doesn't support changing this at runtime
+            this.app.showMessage("Notice", "Please restart the app for the AirPlay mirror mode setting to take effect.");
         }
-        
-        var mode = this.airPlayMirror ? ConnectSDK.AirPlayServiceMode.WEBAPP : ConnectSDK.AirPlayServiceMode.MEDIA;
-        ConnectSDK.discoveryManager.setAirPlayServiceMode(mode);
     },
     
     startDiscovery: function () {
@@ -79,6 +81,11 @@ enyo.kind({
             
             ConnectSDK.discoveryManager.off("devicefound", this.deviceFound, this);
         }
+    },
+    
+    restartDiscovery: function () {
+        this.stopDiscovery();
+        this.startDiscovery();
     },
     
     deviceFound: function (device) {
