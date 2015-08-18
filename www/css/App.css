@@ -1,103 +1,115 @@
 /*
- * Connect SDK Web App Sampler App by LG Electronics
- *
- * To the extent possible under law, the person who associated CC0 with
- * this sample app has waived all copyright and related or neighboring rights
- * to the sample app.
- *
- * You should have received a copy of the CC0 legalcode along with this
- * work. If not, see http://creativecommons.org/publicdomain/zero/1.0/.
- */
+* Connect SDK Web App Sampler App by LG Electronics
+*
+* To the extent possible under law, the person who associated CC0 with
+* this sample app has waived all copyright and related or neighboring rights
+* to the sample app.
+*
+* You should have received a copy of the CC0 legalcode along with this
+* work. If not, see http://creativecommons.org/publicdomain/zero/1.0/.
+*/
 
 .block {
-    display: block;
+	display: block;
 }
 
 .disabled {
-    opacity: 0.5;
+	opacity: 0.5;
 }
 
 .inline-block {
-    display: inline-block;
+	display: inline-block;
 }
 
 .margin,.hmargin {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
 }
 
 .margin,.vmargin {
-    margin-top: 1em;
-    margin-bottom: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 .padded {
-    padding: 1em;
+	padding: 1em;
 }
 
 .indent {
-    margin-left: 1em;
+	margin-left: 1em;
 }
 
 @media (max-width: 800px) {
-    body {
-        font-size: 12px;
-    }
-    
-    .onyx-button {
-        font-size: 12px;
-    }
-    
-    .onyx-radiobutton.onyx-tabbutton {
-        font-size: 16px;
-    }
-    
-    .onyx-item {
-        font-size: 16px;
-    }
+	body {
+		font-size: 12px;
+	}
+
+	.onyx-button {
+		font-size: 12px;
+	}
+
+	.onyx-radiobutton.onyx-tabbutton {
+		font-size: 16px;
+	}
+
+	.onyx-item {
+		font-size: 16px;
+	}
 }
 
 .result-error {
-    color: red;
+	color: red;
 }
 
 .capability-supported {
-    color: green;
-    font-weight: bolder;
+	color: green;
+	font-weight: bolder;
 }
 
 .capability-unsupported {
-    color: red;
-    font-weight: bolder;
+	color: red;
+	font-weight: bolder;
 }
 
 .channel-item > .channel-number {
-    display: inline-block;
-    width: 3em;
+	display: inline-block;
+	width: 3em;
 }
 
 .channel-item > .channel-name {
-    display: inline-block;
+	display: inline-block;
 }
 
 .trackpad {
-    margin: 1em;
-    border: 1px solid gray;
-    border-radius: 3px;
-    background-color: lightgray;
+	margin: 1em;
+	border: 1px solid gray;
+	border-radius: 3px;
+	background-color: lightgray;
+}
+
+.trackpad.disabled {
+	margin: 1em;
+	border: 1px solid lightgray;
+	border-radius: 3px;
+	background-color: #CCCCCC;
 }
 
 .message-direction-label {
-    font-weight: bold;
-    width: 4ex;
-    margin-right: 1em;
+	font-weight: bold;
+	width: 4ex;
+	margin-right: 1em;
 }
 
 .remote-text-input-area {
-    position: absolute;
-    z-index: 100;
-    background-color: rgb(255, 255, 224);
-    width: 100%;
-    padding: 1em;
-    box-shadow: 1px 1px 5px #888;
+	position: absolute;
+	z-index: 100;
+	background-color: rgb(255, 255, 224);
+	width: 100%;
+	padding: 1em;
+	box-shadow: 1px 1px 5px #888;
+}
+
+.onyx-slider.disabled {
+	opacity: 0.3;
+	pointer-events: none;
 }

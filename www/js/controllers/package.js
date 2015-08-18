@@ -10,10 +10,6 @@
 //
 
 enyo.depends(
-    "AppsPanel.js",
-    "ControlPanel.js",
-    "MediaPanel.js",
-    "SystemPanel.js",
-    "TVPanel.js",
-    "WebAppPanel.js"
+	"ConnectableDeviceController.js",
+	"DiscoveryManagerController.js"
 );
