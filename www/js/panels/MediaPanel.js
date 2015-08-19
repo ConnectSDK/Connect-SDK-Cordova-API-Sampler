@@ -13,6 +13,10 @@ enyo.kind({
 	name: "MediaPanel",
 	kind: "CapabilityPanel",
 
+	published: {
+		loopChecked: false
+	},
+
 	handlers: {
 		// Handle onButtonPressed event from any of the TableButton controls
 		onButtonPressed: "handleButton"
@@ -29,53 +33,32 @@ enyo.kind({
 			{kind: "enyo.FittableRows", components: [
 				{kind: "enyo.Table", style: "width: 100%", components: [
 					{components: [
-						{name: "photoButton", kind: "TableButton", content: "PHOTO", key: "displayImage", data: {
-							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photo.jpg",
-							mimeType: "image/jpeg",
-							title: "Sintel Character Design",
-							description: "Blender Open Movie Project",
-							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photoIcon.jpg"
-						}},
-						{name: "videoButton", kind: "TableButton", content: "VIDEO", key: "playMedia", data: {
-							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/video.mp4",
-							mimeType: "video/mp4",
-							title: "Sintel Trailer",
-							description: "Blender Open Movie Project",
-							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/videoIcon.jpg"
-						}},
-						{name: "audioButton", kind: "TableButton", content: "AUDIO", key: "playMedia", data: {
-							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audio.mp3",
-							mimeType: "audio/mp3",
-							title: "The Song that Doesn't End",
-							description: "Lamb Chop's Play Along",
-							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audioIcon.jpg"
-						}}
+						{name: "photoButton", kind: "TableButton", style: "width: 33%", content: "PHOTO", key: "displayImage"},
+						{name: "videoButton", kind: "TableButton", style: "width: 33%", content: "VIDEO", onButtonPressed: "handleVideoButtonPressed"},
+						{name: "audioButton", kind: "TableButton", style: "width: 33%", content: "AUDIO", key: "playAudio"}
 					]},
 					{components: [
 						{style: "height: 20px"} // Spacer
 					]},
 					{components: [
-						{name: "playButton", kind: "TableButton", content: "PLAY", key: "buttonPlay"},
-						{name: "pauseButton", kind: "TableButton", content: "PAUSE", key: "buttonPause"},
-						{name: "stopButton", kind: "TableButton", content: "STOP", key: "buttonStop"}
+						{name: "playButton", kind: "TableButton", style: "width: 33%", content: "PLAY", key: "buttonPlay"},
+						{name: "pauseButton", kind: "TableButton", style: "width: 33%", content: "PAUSE", key: "buttonPause"},
+						{name: "stopButton", kind: "TableButton", style: "width: 33%", content: "STOP", key: "buttonStop"}
 					]},
 					{components: [
-						{name: "rewindButton", kind: "TableButton", content: "REWIND", key: "buttonRewind"},
-						{name: "fastForwardButton", kind: "TableButton", content: "FAST FORWARD", key: "buttonFastForward"},
-						{name: "closeButton", kind: "TableButton", content: "CLOSE", key: "mediaClose"}
+						{name: "rewindButton", kind: "TableButton", style: "width: 33%", content: "REWIND", key: "buttonRewind"},
+						{name: "fastForwardButton", kind: "TableButton", style: "width: 33%", content: "FAST FORWARD", key: "buttonFastForward"},
+						{name: "closeButton", kind: "TableButton", style: "width: 33%", content: "CLOSE", key: "mediaClose"}
 					]},
 					{components: [
 						{style: "height: 20px"} // Spacer
 					]},
 					{components: [
-						{name: "playlistButton", kind: "TableButton", attributes: {colspan: 2}, buttonWidth: "196px", content: "PLAYLIST", key: "playMedia", data: {
-							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/example-m3u-playlist.m3u",
-							mimeType: "application/x-mpegurl",
-							title: "Playlist",
-							description: "Playlist description",
-							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audioIcon.jpg"
-						}},
-						{kind: "enyo.TableCell", style: "text-align: center", components: [
+						{name: "playlistButton", kind: "TableButton", style: "width: 33%", content: "PLAYLIST", key: "playPlaylist"},
+						{kind: "enyo.TableCell", style: "text-align: center; width: 33%;", components: [
+							{name: "subtitlesCheckbox", kind: "CheckboxWithLabel", "content": "Subtitles"}
+						]},
+						{kind: "enyo.TableCell", style: "text-align: center; width: 33%;", components: [
 							{name: "loopCheckbox", kind: "CheckboxWithLabel", "content": "Loop"}
 						]}
 					]}
@@ -108,6 +91,10 @@ enyo.kind({
 		{kind: "enyo.Signals", onDeviceCapabilitiesChanged: "handleCapabilitiesChanged"}
 	],
 
+	bindings: [
+		{from: ".loopChecked", to: ".$.loopCheckbox.checked", oneWay: false}
+	],
+
 	rendered: function () {
 		this.inherited(arguments);
 		this.handleCapabilitiesChanged();
@@ -123,7 +110,8 @@ enyo.kind({
 		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Rewind)));
 		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.FastForward)));
 		this.$.closeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Close)));
-		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Play.Playlist)));
+		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.SRT) || this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.WebVTT)));
+		this.$.subtitlesCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Loop)));
 		this.$.loopCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Loop)));
 		this.$.previousButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Previous)));
 		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Next)));
@@ -140,5 +128,20 @@ enyo.kind({
 		} else {
 			this.$.volumeSlider.addClass("disabled");
 		}
+	},
+
+	handleVideoButtonPressed: function (inSender, inEvent) {
+		if (this.$.subtitlesCheckbox.checked) {
+			enyo.Signals.send("onPlayVideoWithSubtitles");
+		} else {
+			enyo.Signals.send("onPlayVideo");
+		}
+		return true;
+	},
+
+	loopCheckedChanged: function () {
+		SamplerEventHandler.audio.shouldLoop = this.loopChecked;
+		SamplerEventHandler.video.shouldLoop = this.loopChecked;
+		SamplerEventHandler.playlist.shouldLoop = this.loopChecked;
 	}
 });
