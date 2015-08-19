@@ -87,22 +87,22 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.oneButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.twoButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.threeButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.fourButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.fiveButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.sixButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.sevenButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.eightButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.nineButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.dashButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.zeroButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.enterButton.setDisabled(!(this.app.deviceHasCapability("KeyControl.KeyCode")));
-		this.$.powerButton.setDisabled(!(this.app.deviceHasCapability("PowerControl.Off")));
-		this.$['3DButton'].setDisabled(!(this.app.deviceHasCapability("TVControl.3D.Set")));
-		this.$.channelDownButton.setDisabled(!(this.app.deviceHasCapability("TVControl.Channel.Down")));
-		this.$.channelUpButton.setDisabled(!(this.app.deviceHasCapability("TVControl.Channel.Up")));
+		this.$.oneButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.twoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.threeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.fourButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.fiveButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.sixButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.sevenButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.eightButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.nineButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.dashButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.zeroButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.enterButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.KeyCode)));
+		this.$.powerButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PowerControl.Off)));
+		this.$['3DButton'].setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.TVControl["3D"].Set)));
+		this.$.channelDownButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.TVControl.Channel.Down)));
+		this.$.channelUpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.TVControl.Channel.Up)));
 	},
 
 	bindings: [

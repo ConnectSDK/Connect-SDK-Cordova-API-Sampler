@@ -17,18 +17,14 @@ enyo.kind({
 
 	controlClasses: "margin",
 
-	published: {
-		webAppId: "WebAppTester"
-	},
-
 	handlers: {
 		// Handle onButtonPressed event from any of the TableButton controls
 		onButtonPressed: "handleButton"
 	},
 
-	handleButton: function (sender, event) {
-		var eventName = "on" + event.key.charAt(0).toUpperCase() + event.key.slice(1);
-		var eventData = event.data || {};
+	handleButton: function (inSender, inEvent) {
+		var eventName = "on" + inEvent.key.charAt(0).toUpperCase() + inEvent.key.slice(1);
+		var eventData = (inEvent.originator && inEvent.originator.data) || {};
 		enyo.Signals.send(eventName, eventData);
 	},
 
@@ -41,8 +37,8 @@ enyo.kind({
 						{name: "joinWebAppButton", kind: "TableButton", content: "JOIN", key: "joinWebApp"}
 					]},
 					{components: [
-						{name: "sendMessageButton", kind: "TableButton", content: "SEND MESSAGE", key: "sendMessage"},
-						{name: "sendJSONButton", kind: "TableButton", content: "SEND JSON", key: "sendJSON"}
+						{name: "sendMessageButton", kind: "TableButton", content: "SEND MESSAGE", key: "sendMessage", data: {message: "This is a Cordova test message."}},
+						{name: "sendJSONButton", kind: "TableButton", content: "SEND JSON", key: "sendJSON", data: {message: {type: "message", "contents": "This is a test message"}}}
 					]},
 					{components: [
 						{name: "leaveWebAppButton", kind: "TableButton", content: "LEAVE WEBAPP", key: "leaveWebApp"},
@@ -58,23 +54,19 @@ enyo.kind({
 		{kind: "enyo.Signals", onDeviceCapabilitiesChanged: "handleCapabilitiesChanged"}
 	],
 
-	bindings: [
-		{from: ".webAppId", to: ".$.webAppId.value", oneWay: false}
-	],
-
 	rendered: function () {
 		this.inherited(arguments);
 		this.handleCapabilitiesChanged();
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.launchWebAppButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Launch")));
-		this.$.joinWebAppButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Join")));
-		this.$.sendMessageButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Message.Send")));
-		this.$.sendJSONButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Message.Send.JSON")));
-		this.$.leaveWebAppButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Disconnect")));
-		this.$.closeWebAppButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Close")));
-		this.$.pinWebAppButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Pin")));
-		this.$.unpinWebAppButton.setDisabled(!(this.app.deviceHasCapability("WebAppLauncher.Pin")));
+		this.$.launchWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Launch)));
+		this.$.joinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Join)));
+		this.$.sendMessageButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Message.Send)));
+		this.$.sendJSONButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Message.Send.JSON)));
+		this.$.leaveWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Disconnect)));
+		this.$.closeWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Close)));
+		this.$.pinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Pin)));
+		this.$.unpinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Pin)));
 	}
 });

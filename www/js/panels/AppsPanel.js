@@ -62,11 +62,11 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.googleButton.setDisabled(!(this.app.deviceHasCapability("Launcher.Browser") || this.app.deviceHasCapability("Launcher.Browser.Params")));
-		this.$.dialButton.setDisabled(!this.app.deviceHasCapability("Launcher.Levak"));
-		this.$.youtubeButton.setDisabled(!(this.app.deviceHasCapability("Launcher.YouTube") || this.app.deviceHasCapability("Launcher.YouTube.Params")));
-		this.$.netflixButton.setDisabled(!(this.app.deviceHasCapability("Launcher.Netflix") || this.app.deviceHasCapability("Launcher.Netflix.Params")));
-		this.$.appStoreButton.setDisabled(!(this.app.deviceHasCapability("Launcher.AppStore") || this.app.deviceHasCapability("Launcher.AppStore.Params")));
-		this.$.toastButton.setDisabled(!this.app.deviceHasCapability("ToastControl.Show_Toast"));
+		this.$.googleButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.Browser) || this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.Browser.Params)));
+		this.$.dialButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.Levak));
+		this.$.youtubeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.YouTube) || this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.YouTube.Params)));
+		this.$.netflixButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.Netflix) || this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.Netflix.Params)));
+		this.$.appStoreButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.AppStore) || this.app.deviceHasCapability(ConnectSDK.capabilities.Launcher.AppStore.Params)));
+		this.$.toastButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.ToastControl.Show.Toast));
 	}
 });

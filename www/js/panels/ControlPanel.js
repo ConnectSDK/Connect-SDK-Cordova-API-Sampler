@@ -61,13 +61,13 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.backButton.setDisabled(!this.app.deviceHasCapability("KeyControl.Back"));
-		this.$.homeButton.setDisabled(!this.app.deviceHasCapability("KeyControl.Home"));
-		this.$.upButton.setDisabled(!this.app.deviceHasCapability("KeyControl.Up"));
-		this.$.downButton.setDisabled(!this.app.deviceHasCapability("KeyControl.Down"));
-		this.$.leftButton.setDisabled(!this.app.deviceHasCapability("KeyControl.Left"));
-		this.$.rightButton.setDisabled(!this.app.deviceHasCapability("KeyControl.Right"));
-		this.$.enterButton.setDisabled(!this.app.deviceHasCapability("KeyControl.OK"));
-		this.$.pad.setDisabled(!this.app.deviceHasCapability("MouseControl.Connect"));
+		this.$.backButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.Back));
+		this.$.homeButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.Home));
+		this.$.upButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.Up));
+		this.$.downButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.Down));
+		this.$.leftButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.Left));
+		this.$.rightButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.Right));
+		this.$.enterButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.KeyControl.OK));
+		this.$.pad.setDisabled(!this.app.deviceHasCapability(ConnectSDK.capabilities.MouseControl.Connect));
 	}
 });

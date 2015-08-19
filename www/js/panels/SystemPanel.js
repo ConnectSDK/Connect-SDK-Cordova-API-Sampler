@@ -68,19 +68,19 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		if (this.app.deviceHasCapability("VolumeControl.Set")) {
+		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Set)) {
 			this.$.volumeSlider.removeClass("disabled");
 		} else {
 			this.$.volumeSlider.addClass("disabled");
 		}
-		this.$.muteCheckbox.setDisabled(!(this.app.deviceHasCapability("VolumeControl.Mute.Set")));
-		this.$.volumeDownButton.setDisabled(!(this.app.deviceHasCapability("VolumeControl.UpDown")));
-		this.$.volumeUpButton.setDisabled(!(this.app.deviceHasCapability("VolumeControl.UpDown")));
-		this.$.playButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Play")));
-		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Pause")));
-		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Stop")));
-		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Rewind")));
-		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.FastForward")));
-		this.$.inputPickerButton.setDisabled(!(this.app.deviceHasCapability("ExternalInputControl.Picker.Launch")));
+		this.$.muteCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Mute.Set)));
+		this.$.volumeDownButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.UpDown)));
+		this.$.volumeUpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.UpDown)));
+		this.$.playButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Play)));
+		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Pause)));
+		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Stop)));
+		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Rewind)));
+		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.FastForward)));
+		this.$.inputPickerButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.ExternalInputControl.Picker.Launch)));
 	}
 });

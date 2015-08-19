@@ -18,9 +18,9 @@ enyo.kind({
 		onButtonPressed: "handleButton"
 	},
 
-	handleButton: function (sender, event) {
-		var eventName = "on" + event.key.charAt(0).toUpperCase() + event.key.slice(1);
-		var eventData = event.data || {};
+	handleButton: function (inSender, inEvent) {
+		var eventName = "on" + inEvent.key.charAt(0).toUpperCase() + inEvent.key.slice(1);
+		var eventData = (inEvent.originator && inEvent.originator.data) || {};
 		enyo.Signals.send(eventName, eventData);
 	},
 
@@ -29,9 +29,27 @@ enyo.kind({
 			{kind: "enyo.FittableRows", components: [
 				{kind: "enyo.Table", style: "width: 100%", components: [
 					{components: [
-						{name: "photoButton", kind: "TableButton", content: "PHOTO", key: "mediaDisplayPhoto"},
-						{name: "videoButton", kind: "TableButton", content: "VIDEO", key: "mediaPlayVideo"},
-						{name: "audioButton", kind: "TableButton", content: "AUDIO", key: "mediaPlayAudio"}
+						{name: "photoButton", kind: "TableButton", content: "PHOTO", key: "displayImage", data: {
+							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photo.jpg",
+							mimeType: "image/jpeg",
+							title: "Sintel Character Design",
+							description: "Blender Open Movie Project",
+							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photoIcon.jpg"
+						}},
+						{name: "videoButton", kind: "TableButton", content: "VIDEO", key: "playMedia", data: {
+							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/video.mp4",
+							mimeType: "video/mp4",
+							title: "Sintel Trailer",
+							description: "Blender Open Movie Project",
+							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/videoIcon.jpg"
+						}},
+						{name: "audioButton", kind: "TableButton", content: "AUDIO", key: "playMedia", data: {
+							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audio.mp3",
+							mimeType: "audio/mp3",
+							title: "The Song that Doesn't End",
+							description: "Lamb Chop's Play Along",
+							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audioIcon.jpg"
+						}}
 					]},
 					{components: [
 						{style: "height: 20px"} // Spacer
@@ -50,7 +68,13 @@ enyo.kind({
 						{style: "height: 20px"} // Spacer
 					]},
 					{components: [
-						{name: "playlistButton", kind: "TableButton", attributes: {colspan: 2}, buttonWidth: "196px", content: "PLAYLIST", key: "mediaPlaylist"},
+						{name: "playlistButton", kind: "TableButton", attributes: {colspan: 2}, buttonWidth: "196px", content: "PLAYLIST", key: "playMedia", data: {
+							url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/example-m3u-playlist.m3u",
+							mimeType: "application/x-mpegurl",
+							title: "Playlist",
+							description: "Playlist description",
+							icon: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audioIcon.jpg"
+						}},
 						{kind: "enyo.TableCell", style: "text-align: center", components: [
 							{name: "loopCheckbox", kind: "CheckboxWithLabel", "content": "Loop"}
 						]}
@@ -90,28 +114,28 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.photoButton.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.Display.Image")));
-		this.$.videoButton.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.Play.Video")));
-		this.$.audioButton.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.Play.Audio")));
-		this.$.playButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Play")));
-		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Pause")));
-		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Stop")));
-		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.Rewind")));
-		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability("MediaControl.FastForward")));
-		this.$.closeButton.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.Close")));
-		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.Play.Playlist")));
-		this.$.loopCheckbox.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.Loop")));
-		this.$.previousButton.setDisabled(!(this.app.deviceHasCapability("PlaylistControl.Previous")));
-		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability("PlaylistControl.Next")));
-		this.$.jumpButton.setDisabled(!(this.app.deviceHasCapability("PlaylistControl.JumpToTrack")));
-		this.$.jumpInput.setDisabled(!(this.app.deviceHasCapability("PlaylistControl.JumpToTrack")));
-		this.$.infoButton.setDisabled(!(this.app.deviceHasCapability("MediaPlayer.MediaInfo.Get")));
-		if (this.app.deviceHasCapability("MediaControl.Seek")) {
+		this.$.photoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Display.Image)));
+		this.$.videoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Play.Video)));
+		this.$.audioButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Play.Audio)));
+		this.$.playButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Play)));
+		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Pause)));
+		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Stop)));
+		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Rewind)));
+		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.FastForward)));
+		this.$.closeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Close)));
+		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Play.Playlist)));
+		this.$.loopCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Loop)));
+		this.$.previousButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Previous)));
+		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Next)));
+		this.$.jumpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.JumpToTrack)));
+		this.$.jumpInput.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.JumpToTrack)));
+		this.$.infoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.MediaInfo.Get)));
+		if (this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Seek)) {
 			this.$.seekSlider.removeClass("disabled");
 		} else {
 			this.$.seekSlider.addClass("disabled");
 		}
-		if (this.app.deviceHasCapability("VolumeControl.Set")) {
+		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Set)) {
 			this.$.volumeSlider.removeClass("disabled");
 		} else {
 			this.$.volumeSlider.addClass("disabled");

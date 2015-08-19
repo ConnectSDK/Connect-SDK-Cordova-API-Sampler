@@ -70,8 +70,8 @@ enyo.kind({
 		navigator.app.exitApp();
 	},
 
-	deviceHasCapability: function (capability) {
-		return !!(this.device && this.device._capabilities && this.device._capabilities[capability]);
+	deviceHasCapability: function (cap) {
+		return !!(this.device && this.device.hasCapability(cap));
 	}
 });
 
