@@ -54,9 +54,78 @@ enyo.kind({
 		}
 	},
 
-	handleVolumeUp: function (inSender, inEvent) {
+	/*
+		Set the mute status
+	*/
+	handleSetMute: function (inSender, inEvent) {
+		var mute = inEvent.mute; // Boolean
+		app.device.getVolumeControl().setMute(mute);
 	},
+
+	/*
+		Get the mute status
+	*/
+	handleGetMute: function (inSender, inEvent) {
+		app.device.getVolumeControl().getMute().success(function (mute) {
+			// 'mute' is a boolean
+			inEvent.callbacks.success(mute);
+		}).error(inEvent.callbacks.error);
+	},
+
+	/*
+		Subscribe to receive updates to the mute status
+	*/
+	handleSubscribeMute: function (inSender, inEvent) {
+		var subscription = app.device.getVolumeControl().subscribeMute().success(function (mute) {
+			// 'mute' is a boolean
+			inEvent.callbacks.success(mute);
+		}).error(inEvent.callbacks.error);
+
+		// You can cancel the subscription with subscription.unsubscribe();
+	},
+
+	/*
+		Set the volume
+	*/
+	handleSetVolume: function (inSender, inEvent) {
+		var volume = inEvent.volume; // Should be a decimal percentage (e.g. 0.10)
+		app.device.getVolumeControl().setVolume(volume);
+	},
+
+	/*
+		Get the current volume
+	*/
+	handleGetVolume: function (inSender, inEvent) {
+		app.device.getVolumeControl().getVolume().success(function (volume) {
+			// 'volume' contains the volume as a decimal percentage (e.g. 0.10)
+			inEvent.callbacks.success(volume);
+		}).error(inEvent.callbacks.error);
+	},
+
+	/*
+		Subscribe to receive updates when the volume changes
+	*/
+	handleSubscribeVolume: function (inSender, inEvent) {
+		var subscription = app.device.getVolumeControl().subscribeVolume().success(function (volume) {
+			// 'volume' contains the volume as a decimal percentage (e.g. 0.10)
+			inEvent.callbacks.success(volume);
+		}).error(inEvent.callbacks.error);
+
+		// You can cancel the subscription with subscription.unsubscribe();
+	},
+
+	/*
+		Increase the volume by 1
+	*/
+	handleVolumeUp: function (inSender, inEvent) {
+		app.device.getVolumeControl().volumeUp();
+	},
+
+	/*
+		Decrease the volume by 1
+	*/
 	handleVolumeDown: function (inSender, inEvent) {
+		app.device.getVolumeControl().volumeDown();
 	},
 
 	/*
@@ -106,11 +175,22 @@ enyo.kind({
 	/*
 		Fast-forward a playing video/audio/playlist
 	*/
-	handleStop: function (inSender, inEvent) {
+	handleFastForward: function (inSender, inEvent) {
 		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
 		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
 		if (SamplerEventHandler.mediaPlayer.mediaControl) {
 			SamplerEventHandler.mediaPlayer.mediaControl.fastForward();
+		}
+	},
+
+	/*
+		Stop a playing video/audio/playlist
+	*/
+	handleStop: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.stop();
 		}
 	},
 
@@ -162,7 +242,9 @@ enyo.kind({
 				SamplerEventHandler.mediaPlayer.mediaControl.release();
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = mediaControl && mediaControl.acquire();
-		});
+
+			inEvent.callbacks.success(arguments);
+		}).error(inEvent.callbacks.error);
 	},
 
 	/*
@@ -191,7 +273,9 @@ enyo.kind({
 				SamplerEventHandler.mediaPlayer.mediaControl.release();
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = mediaControl && mediaControl.acquire();
-		});
+
+			inEvent.callbacks.success(arguments);
+		}).error(inEvent.callbacks.error);
 	},
 
 	/*
@@ -230,9 +314,9 @@ enyo.kind({
 				SamplerEventHandler.mediaPlayer.mediaControl.release();
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = mediaControl && mediaControl.acquire();
-		}).error(function () {
-			debugger;
-		});
+
+			inEvent.callbacks.success(arguments);
+		}).error(inEvent.callbacks.error);
 	},
 
 	/*
@@ -266,7 +350,9 @@ enyo.kind({
 				SamplerEventHandler.mediaPlayer.playlistControl.release();
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = playlistControl && playlistControl.acquire();
-		});
+
+			inEvent.callbacks.success(arguments);
+		}).error(inEvent.callbacks.error);
 	},
 
 	/*
@@ -291,6 +377,39 @@ enyo.kind({
 				SamplerEventHandler.mediaPlayer.playlistControl.release();
 				SamplerEventHandler.mediaPlayer.playlistControl = null;
 			}
+		}
+	},
+
+	/*
+		Seek the media to a particular time (in seconds)
+	*/
+	handleMediaSeekTo: function (inSender, inEvent) {
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.seek(inEvent.position).success(function () {}).error(function () {});
+		}
+	},
+
+	/*
+		Get the duration (in seconds) of the playing media
+	*/
+	handleMediaGetDuration: function (inSender, inEvent) {
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.getDuration().success(function (duration) {
+				// 'duration' contains the media duration in seconds;
+				inEvent.callbacks.success(duration);
+			}).error(inEvent.callbacks.error);
+		}
+	},
+
+	/*
+		Get the position (in seconds) of the playing media
+	*/
+	handleMediaGetPosition: function (inSender, inEvent) {
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.getPosition().success(function (position) {
+				// 'position' contains the media position in seconds
+				inEvent.callbacks.success(position);
+			}).error(inEvent.callbacks.error);
 		}
 	},
 
@@ -392,8 +511,12 @@ enyo.kind({
 		 onOpenAppStore: "",
 		 onOpenYoutube: "",
 		 onLaunchApp: "",
-		 onSetVolume: "",
-		 onSetMute: "",
+		 onSetVolume: "handleSetVolume",
+		 onGetVolume: "handleGetVolume",
+		 onSubscribeVolume: "handleSubscribeVolume",
+		 onSetMute: "handleSetMute",
+		 onGetMute: "handleGetMute",
+		 onSubscribeMute: "handleSubscribeMute",
 		 onOpenChannel: "",
 		 // Buttons
 		 onButtonVolumeUp: "handleVolumeUp",
@@ -415,8 +538,9 @@ enyo.kind({
 		 onMediaPrevious: "",
 		 onMediaNext: "",
 		 onMediaJumpToTrack: "",
-		 onMediaShowInfo: "",
-		 onMediaSeekTo: "",
+		 onMediaSeekTo: "handleMediaSeekTo",
+		 onMediaGetDuration: "handleMediaGetDuration",
+		 onMediaGetPosition: "handleMediaGetPosition",
 		 // Web App
 		 onLaunchWebApp: "handleLaunchWebApp",
 		 onJoinWebApp: "handleJoinWebApp",

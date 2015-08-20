@@ -17,6 +17,9 @@ enyo.kind({
 		loopChecked: false
 	},
 
+	getPositionInterval: null,
+	getDurationInterval: null,
+
 	handlers: {
 		// Handle onButtonPressed event from any of the TableButton controls
 		onButtonPressed: "handleButton"
@@ -73,19 +76,14 @@ enyo.kind({
 						]}
 					]}
 				]},
-				{kind: "enyo.FittableColumns", style: "width: 90%; margin: 20px auto;", components: [
-					{content: "--:--"},
+				{name: "progressColumns", kind: "enyo.FittableColumns", style: "width: 90%; margin: 20px auto;", components: [
+					{name: "positionLabel", content: "--:--"},
 					{content: "Seek", style: "text-align: center;", fit: true},
-					{content: "--:--"}
+					{name: "durationLabel", content: "--:--"}
 				]},
-				{name: "seekSlider", kind: "onyx.Slider", value: 0, style: "width: 90%; margin: 25px auto"},
+				{name: "seekSlider", kind: "onyx.Slider", classes: "disabled", value: 1, min: 1, style: "width: 90%; margin: 25px auto", onChange: "handleSeekChange"},
 				{content: "Volume", style: "width: 100%; text-align: center; margin: 20px auto;"},
-				{name: "volumeSlider", kind: "onyx.Slider", value: 0, style: "width: 90%; margin: 25px auto"},
-				{kind: "enyo.Table", style: "width: 100%", components: [
-					{components: [
-						{name: "infoButton", kind: "TableButton", content: "SHOW INFO", buttonWidth: "40%", key: "mediaShowInfo"}
-					]}
-				]}
+				{name: "volumeSlider", kind: "onyx.Slider", value: 0, min: 0, max: 1, style: "width: 90%; margin: 25px auto", onChange: "handleVolumeChange"}
 			]}
 		]},
 		{kind: "enyo.Signals", onDeviceCapabilitiesChanged: "handleCapabilitiesChanged"}
@@ -117,24 +115,38 @@ enyo.kind({
 		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Next)));
 		this.$.jumpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.JumpToTrack)));
 		this.$.jumpInput.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.JumpToTrack)));
-		this.$.infoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.MediaInfo.Get)));
-		if (this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Seek)) {
-			this.$.seekSlider.removeClass("disabled");
-		} else {
-			this.$.seekSlider.addClass("disabled");
-		}
 		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Set)) {
 			this.$.volumeSlider.removeClass("disabled");
+			this.subscribeVolume();
 		} else {
 			this.$.volumeSlider.addClass("disabled");
 		}
+		if (!this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Seek)) {
+			this.$.seekSlider.addClass("disabled");
+		}
+	},
+
+	subscribeVolume: function () {
+		enyo.Signals.send("onSubscribeVolume", {callbacks: {success: this.handleGotVolume.bind(this), error: this.handleGetVolumeError.bind(this)}})
+	},
+
+	handleGotVolume: function (volume) {
+		this.$.volumeSlider.animateTo(volume);
+	},
+
+	handleGetVolumeError: function () {
+	},
+
+	handleVolumeChange: function () {
+		var volume = parseInt(this.$.volumeSlider.value * 100) / 100; // Crop any decimals positions after 2
+		enyo.Signals.send("onSetVolume", {volume: volume});
 	},
 
 	handleVideoButtonPressed: function (inSender, inEvent) {
 		if (this.$.subtitlesCheckbox.checked) {
-			enyo.Signals.send("onPlayVideoWithSubtitles");
+			enyo.Signals.send("onPlayVideoWithSubtitles", {callbacks: {success: this.handleMediaSuccess.bind(this), error: this.handleMediaError.bind(this)}});
 		} else {
-			enyo.Signals.send("onPlayVideo");
+			enyo.Signals.send("onPlayVideo", {callbacks: {success: this.handleMediaSuccess.bind(this), error: this.handleMediaError.bind(this)}});
 		}
 		return true;
 	},
@@ -143,5 +155,87 @@ enyo.kind({
 		SamplerEventHandler.audio.shouldLoop = this.loopChecked;
 		SamplerEventHandler.video.shouldLoop = this.loopChecked;
 		SamplerEventHandler.playlist.shouldLoop = this.loopChecked;
+	},
+
+	handleMediaSuccess: function () {
+		if (this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Seek)) {
+			this.$.seekSlider.removeClass("disabled");
+			if (this.getPositionInterval !== null) {
+				clearInterval(this.getPositionInterval);
+			}
+			this.getPositionInterval = setInterval(this.handleGetPosition.bind(this), 200);
+			if (this.getDurationInterval !== null) {
+				clearInterval(this.getDurationInterval);
+			}
+			this.getDurationInterval = setInterval(this.handleGetDuration.bind(this), 500);
+		} else {
+			this.$.seekSlider.addClass("disabled");
+		}
+	},
+
+	handleMediaError: function () {
+		if (this.getPositionInterval !== null) {
+			clearInterval(this.getPositionInterval);
+		}
+		if (this.getDurationInterval !== null) {
+			clearInterval(this.getDurationInterval);
+		}
+	},
+
+	handleGetDuration: function () {
+		enyo.Signals.send("onMediaGetDuration", {callbacks: {success: this.handleGotDuration.bind(this), error: this.handleGetDurationError.bind(this)}});
+	},
+
+	handleGotDuration: function (duration) {
+		this.$.seekSlider.setMax(duration);
+
+		var minutes = Math.floor(duration / 60);
+		var seconds = duration - (minutes * 60);
+
+		if (minutes < 10) {
+			minutes = "0" + minutes;
+		}
+		if (seconds < 10) {
+			seconds = "0" + seconds;
+		}
+		var time = minutes + ':' + seconds;
+
+		this.$.durationLabel.setContent(time);
+
+		this.$.progressColumns.resized();
+	},
+
+	handleGetDurationError: function () {
+
+	},
+
+	handleSeekChange: function () {
+		enyo.Signals.send("onMediaSeekTo", {position: this.$.seekSlider.value});
+	},
+
+	handleGetPosition: function () {
+		enyo.Signals.send("onMediaGetPosition", {callbacks: {success: this.handleGotPosition.bind(this), error: this.handleGetPositionError.bind(this)}});
+	},
+
+	handleGotPosition: function (position) {
+		this.$.seekSlider.animateTo(position);
+
+		var minutes = Math.floor(position / 60);
+		var seconds = position - (minutes * 60);
+
+		if (minutes < 10) {
+			minutes = "0" + minutes;
+		}
+		if (seconds < 10) {
+			seconds = "0" + seconds;
+		}
+		var time = minutes + ':' + seconds;
+
+		this.$.positionLabel.setContent(time);
+
+		this.$.progressColumns.resized();
+	},
+
+	handleGetPositionError: function () {
 	}
 });

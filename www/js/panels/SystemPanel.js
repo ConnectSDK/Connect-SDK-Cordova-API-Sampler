@@ -18,6 +18,10 @@ enyo.kind({
 		onButtonPressed: "handleButton"
 	},
 
+	published: {
+		muteChecked: false
+	},
+
 	handleButton: function (sender, event) {
 		var eventName = "on" + event.key.charAt(0).toUpperCase() + event.key.slice(1);
 		var eventData = event.data || {};
@@ -28,7 +32,7 @@ enyo.kind({
 		{kind: "enyo.Scroller", touch: true, classes: "enyo-fit", horizontal: "hidden", components: [
 			{kind: "enyo.FittableRows", components: [
 				{content: "Volume", style: "width: 100%; text-align: center; margin: 20px auto;"},
-				{name: "volumeSlider", kind: "onyx.Slider", value: 0, style: "width: 90%; margin: 25px auto"},
+				{name: "volumeSlider", kind: "onyx.Slider", value: 0, min: 0, max: 1, style: "width: 90%; margin: 25px auto", onChange: "handleVolumeChange"},
 				{kind: "enyo.Table", style: "width: 100%", components: [
 					{components: [
 						{kind: "enyo.TableCell", style: "text-align: center;", components: [
@@ -62,6 +66,10 @@ enyo.kind({
 		{kind: "enyo.Signals", onDeviceCapabilitiesChanged: "handleCapabilitiesChanged"}
 	],
 
+	bindings: [
+		{from: ".muteChecked", to: ".$.muteCheckbox.checked", oneWay: false}
+	],
+
 	rendered: function () {
 		this.inherited(arguments);
 		this.handleCapabilitiesChanged();
@@ -70,6 +78,7 @@ enyo.kind({
 	handleCapabilitiesChanged: function () {
 		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Set)) {
 			this.$.volumeSlider.removeClass("disabled");
+			this.subscribeVolume();
 		} else {
 			this.$.volumeSlider.addClass("disabled");
 		}
@@ -82,5 +91,40 @@ enyo.kind({
 		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Rewind)));
 		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.FastForward)));
 		this.$.inputPickerButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.ExternalInputControl.Picker.Launch)));
+
+		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Mute.Get)) {
+			this.subscribeMute();
+		}
+	},
+
+	subscribeVolume: function () {
+		enyo.Signals.send("onSubscribeVolume", {callbacks: {success: this.handleGotVolume.bind(this), error: this.handleGetVolumeError.bind(this)}})
+	},
+
+	handleGotVolume: function (volume) {
+		this.$.volumeSlider.animateTo(volume);
+	},
+
+	handleGetVolumeError: function () {
+	},
+
+	handleVolumeChange: function () {
+		var volume = parseInt(this.$.volumeSlider.value * 100) / 100; // Crop any decimals positions after 2
+		enyo.Signals.send("onSetVolume", {volume: volume});
+	},
+
+	subscribeMute: function () {
+		enyo.Signals.send("onSubscribeMute", {callbacks: {success: this.handleGotMute.bind(this), error: this.handleGetMuteError.bind(this)}});
+	},
+
+	handleGotMute: function (mute) {
+		this.$.muteCheckbox.setChecked(mute);
+	},
+
+	handleGetMuteError: function () {
+	},
+
+	muteCheckedChanged: function () {
+		enyo.Signals.send("onSetMute", {mute: this.$.muteCheckbox.checked});
 	}
 });

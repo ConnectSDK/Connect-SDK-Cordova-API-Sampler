@@ -14,35 +14,22 @@ enyo.kind({
 	kind: "enyo.Controller",
 
 	published: {
-		requestPairing: true, // if true, ask for capabilities that require pairing
-		autoConnect: true // if true, connect to last connected device on boot
+		requestPairing: true // if true, ask for capabilities that require pairing
 	},
 
 	create: function () {
 		this.inherited(arguments);
 
-		// FIXME: Cordova seems to have problems starting discovery in the same tick.
-		// Need to investigate.
+		// Cordova seems to have problems starting discovery in the same tick.
 		this.startJob("startup", "startDiscovery", 0);
 
 		this.justStartedApp = true;
-
-		// Load settings
-		this.set("autoConnect", !!window.localStorage.getItem("autoConnect"));
-		this.set("requestPairing", !!window.localStorage.getItem("requestPairing"));
-		this.savedDeviceId = window.localStorage.getItem("lastDeviceId") || null;
 	},
 
 	requestPairingChanged: function () {
 		// restart discovery with new setting
 		this.stopDiscovery();
 		this.startDiscovery();
-
-		window.localStorage.setItem("requestPairing", this.requestPairing);
-	},
-
-	autoConnectChanged: function () {
-		window.localStorage.setItem("autoConnect", this.autoConnect);
 	},
 
 	startDiscovery: function () {
@@ -67,12 +54,6 @@ enyo.kind({
 
 	deviceFound: function (device) {
 		console.log("device found: " + device.getId());
-
-		if (this.justStartedApp && this.savedDeviceId && device.getId() === this.savedDeviceId) {
-			this.justStartedApp = false;
-
-			this.app.$.deviceController.setPendingDevice(device);
-		}
 	},
 
 	showPicker: function () {
@@ -110,7 +91,5 @@ enyo.kind({
 
 		console.log("selected device in picker");
 		deviceController.setPendingDevice(device);
-
-		window.localStorage.setItem("savedDeviceId", device.getId());
 	}
 });
