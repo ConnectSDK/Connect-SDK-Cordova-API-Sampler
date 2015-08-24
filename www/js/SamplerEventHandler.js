@@ -129,6 +129,41 @@ enyo.kind({
 	},
 
 	/*
+		Resume media playback
+	*/
+	handleButtonPlay: function (inSender, inEvent) {
+		app.device.getMediaControl().play();
+	},
+
+	/*
+		Pause media playback
+	*/
+	handleButtonPause: function (inSender, inEvent) {
+		app.device.getMediaControl().pause();
+	},
+
+	/*
+		Stop media playback
+	*/
+	handleButtonStop: function (inSender, inEvent) {
+		app.device.getMediaControl().stop();
+	},
+
+	/*
+		Rewind media
+	*/
+	handleButtonRewind: function (inSender, inEvent) {
+		app.device.getMediaControl().rewind();
+	},
+
+	/*
+		Fast forward media
+	*/
+	handleButtonFastForward: function (inSender, inEvent) {
+		app.device.getMediaControl().fastForward();
+	},
+
+	/*
 		Power off the device
 	*/
 	handlePowerOff: function (inSender, inEvent) {
@@ -537,8 +572,7 @@ enyo.kind({
 	components: [
 		// Hook handlers into UI
 		{kind: "enyo.Signals",
-		 // System
-		 onShowInputPicker: "",
+		 // Apps
 		 onOpenGoogle: "",
 		 onOpenDIALApp: "",
 		 onShowToast: "",
@@ -546,23 +580,32 @@ enyo.kind({
 		 onOpenAppStore: "",
 		 onOpenYoutube: "",
 		 onLaunchApp: "",
+		 onGetAppList: "",
+		 onOpenApp: "",
+		 // TV
+		 onOpenChannel: "",
+		 onGetChannelList: "",
+		 onChannelUp: "",
+		 onChannelDown: "",
+		 // System
 		 onSetVolume: "handleSetVolume",
 		 onGetVolume: "handleGetVolume",
 		 onSubscribeVolume: "handleSubscribeVolume",
 		 onSetMute: "handleSetMute",
 		 onGetMute: "handleGetMute",
 		 onSubscribeMute: "handleSubscribeMute",
-		 onOpenChannel: "",
-		 // Buttons
 		 onButtonVolumeUp: "handleVolumeUp",
 		 onButtonVolumeDown: "handleVolumeDown",
 		 onButtonPress: "",
-		 onButtonPlay: "",
-		 onButtonPause: "",
-		 onButtonStop: "",
-		 onButtonRewind: "",
-		 onButtonFastForward: "",
+		 onButtonPlay: "handleButtonPlay",
+		 onButtonPause: "handleButtonPause",
+		 onButtonStop: "handleButtonStop",
+		 onButtonRewind: "handleButtonRewind",
+		 onButtonFastForward: "handleButtonFastForward",
 		 onButtonPowerOff: "handlePowerOff",
+		 onGetExternalInputList: "",
+		 onOpenExternalInput: "",
+		 onShowInputPicker: "",
 		 // Media
 		 onDisplayImage: "handleDisplayImage",
 		 onPlayAudio: "handlePlayAudio",
