@@ -22,9 +22,9 @@ enyo.kind({
 		muteChecked: false
 	},
 
-	handleButton: function (sender, event) {
-		var eventName = "on" + event.key.charAt(0).toUpperCase() + event.key.slice(1);
-		var eventData = event.data || {};
+	handleButton: function (inSender, inEvent) {
+		var eventName = "on" + inEvent.key.charAt(0).toUpperCase() + inEvent.key.slice(1);
+		var eventData = (inEvent.originator && inEvent.originator.data) || {};
 		enyo.Signals.send(eventName, eventData);
 	},
 

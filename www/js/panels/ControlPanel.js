@@ -18,9 +18,9 @@ enyo.kind({
 		onButtonPressed: "handleButton"
 	},
 
-	handleButton: function (sender, event) {
-		var eventName = "on" + event.key.charAt(0).toUpperCase() + event.key.slice(1);
-		var eventData = event.data || {};
+	handleButton: function (inSender, inEvent) {
+		var eventName = "on" + inEvent.key.charAt(0).toUpperCase() + inEvent.key.slice(1);
+		var eventData = (inEvent.originator && inEvent.originator.data) || {};
 		enyo.Signals.send(eventName, eventData);
 	},
 
@@ -29,24 +29,24 @@ enyo.kind({
 		{kind: "enyo.FittableRows", classes: "enyo-fit", components: [
 			{kind: "enyo.Table", style: "width: 100%", components: [
 				{components: [
-					{name: "backButton", kind: "TableButton", content: "Back", key: "buttonPress"},
+					{name: "backButton", kind: "TableButton", content: "Back", key: "buttonBack"},
 					{},
-					{name: "homeButton", kind: "TableButton", content: "Home", key: "buttonPress"}
+					{name: "homeButton", kind: "TableButton", content: "Home", key: "buttonHome"}
 				]},
 
 				{components: [
 					{},
-					{name: "upButton", kind: "TableButton", content: "Up", key: "buttonPress"},
+					{name: "upButton", kind: "TableButton", content: "Up", key: "buttonUp"},
 					{}
 				]},
 				{components: [
-					{name: "leftButton", kind: "TableButton", content: "Left", key: "buttonPress"},
-					{name: "enterButton", kind: "TableButton", content: "Enter", key: "buttonPress"},
-					{name: "rightButton", kind: "TableButton", content: "Right", key: "buttonPress"}
+					{name: "leftButton", kind: "TableButton", content: "Left", key: "buttonLeft"},
+					{name: "enterButton", kind: "TableButton", content: "Click", key: "buttonOK"},
+					{name: "rightButton", kind: "TableButton", content: "Right", key: "buttonRight"}
 				]},
 				{components: [
 					{},
-					{name: "downButton", kind: "TableButton", content: "Down", key: "buttonPress"},
+					{name: "downButton", kind: "TableButton", content: "Down", key: "buttonDown"},
 					{}
 				]},
 			]},

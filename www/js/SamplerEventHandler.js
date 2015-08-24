@@ -55,6 +55,32 @@ enyo.kind({
 	},
 
 	/*
+		Get the list of channels from the TV
+	*/
+	handleGetChannelList: function (inSender, inEvent) {
+		app.device.getTVControl().getChannelList().success(function (channels) {
+			// Channels is an array containing the channels list
+			if (inEvent.callbacks.success) {
+				inEvent.callbacks.success(channels);
+			}
+		})
+	},
+
+	/*
+		TV Channel Up
+	*/
+	handleChannelUp: function (inSender, inEvent) {
+		app.device.getTVControl().channelUp();
+	},
+
+	/*
+		TV Channel Down
+	*/
+	handleChannelDown: function (inSender, inEvent) {
+		app.device.getTVControl().channelDown();
+	},
+
+	/*
 		Set the mute status
 	*/
 	handleSetMute: function (inSender, inEvent) {
@@ -126,6 +152,63 @@ enyo.kind({
 	*/
 	handleVolumeDown: function (inSender, inEvent) {
 		app.device.getVolumeControl().volumeDown();
+	},
+
+	/*
+		Simulate remote button press
+	*/
+	handleButtonPress: function (inSender, inEvent) {
+		var keyCode = inEvent.keyCode; // Integer, key codes can be referenced through the ConnectSDK.KeyCodes constant
+		app.device.getKeyControl().sendKeyCode(keyCode);
+	},
+
+	/*
+		Simulate up press
+	*/
+	handleButtonUp: function (inSender, inEvent) {
+		app.device.getKeyControl().up();
+	},
+
+	/*
+		Simulate down press
+	*/
+	handleButtonDown: function (inSender, inEvent) {
+		app.device.getKeyControl().down();
+	},
+
+	/*
+		Simulate left press
+	*/
+	handleButtonLeft: function (inSender, inEvent) {
+		app.device.getKeyControl().left();
+	},
+
+	/*
+		Simulate right press
+	*/
+	handleButtonRight: function (inSender, inEvent) {
+		app.device.getKeyControl().right();
+	},
+
+	/*
+		Simulate OK press
+	*/
+	handleButtonOK: function (inSender, inEvent) {
+		app.device.getKeyControl().ok();
+	},
+
+	/*
+		Simulate home press
+	*/
+	handleButtonHome: function (inSender, inEvent) {
+		app.device.getKeyControl().home();
+	},
+
+	/*
+		Simulate back press
+	*/
+	handleButtonBack: function (inSender, inEvent) {
+		app.device.getKeyControl().back();
 	},
 
 	/*
@@ -584,9 +667,9 @@ enyo.kind({
 		 onOpenApp: "",
 		 // TV
 		 onOpenChannel: "",
-		 onGetChannelList: "",
-		 onChannelUp: "",
-		 onChannelDown: "",
+		 onGetChannelList: "handleGetChannelList",
+		 onChannelUp: "handleChannelUp",
+		 onChannelDown: "handleChannelDown",
 		 // System
 		 onSetVolume: "handleSetVolume",
 		 onGetVolume: "handleGetVolume",
@@ -596,7 +679,14 @@ enyo.kind({
 		 onSubscribeMute: "handleSubscribeMute",
 		 onButtonVolumeUp: "handleVolumeUp",
 		 onButtonVolumeDown: "handleVolumeDown",
-		 onButtonPress: "",
+		 onButtonPress: "handleButtonPress",
+		 onButtonUp: "handleButtonUp",
+		 onButtonDown: "handleButtonDown",
+		 onButtonLeft: "handleButtonLeft",
+		 onButtonRight: "handleButtonRight",
+		 onButtonOK: "handleButtonOK",
+		 onButtonHome: "handleButtonHome",
+		 onButtonBack: "handleButtonBack",
 		 onButtonPlay: "handleButtonPlay",
 		 onButtonPause: "handleButtonPause",
 		 onButtonStop: "handleButtonStop",
@@ -606,6 +696,9 @@ enyo.kind({
 		 onGetExternalInputList: "",
 		 onOpenExternalInput: "",
 		 onShowInputPicker: "",
+		 onMoveMouse: "",
+		 onClickMouse: "",
+		 onScrollMouse: "",
 		 // Media
 		 onDisplayImage: "handleDisplayImage",
 		 onPlayAudio: "handlePlayAudio",

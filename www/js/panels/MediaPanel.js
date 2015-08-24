@@ -134,7 +134,8 @@ enyo.kind({
 		this.$.volumeSlider.animateTo(volume);
 	},
 
-	handleGetVolumeError: function () {
+	handleGetVolumeError: function (err) {
+		this.app.showError(err);
 	},
 
 	handleVolumeChange: function () {
@@ -210,8 +211,8 @@ enyo.kind({
 		this.$.progressColumns.resized();
 	},
 
-	handleGetDurationError: function () {
-
+	handleGetDurationError: function (err) {
+		this.app.showError(err);
 	},
 
 	handleSeekChange: function () {
@@ -241,7 +242,8 @@ enyo.kind({
 		this.$.progressColumns.resized();
 	},
 
-	handleGetPositionError: function () {
+	handleGetPositionError: function (err) {
+		this.app.showError(err);
 	},
 
 	handleJumpToTrackPressed: function () {
