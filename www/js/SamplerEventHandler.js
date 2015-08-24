@@ -129,69 +129,10 @@ enyo.kind({
 	},
 
 	/*
-		Resume playback of a paused video/audio/playlist
+		Power off the device
 	*/
-	handlePlay: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.play();
-		}
-	},
-
-	/*
-		Pause playback of a playing video/audio/playlist
-	*/
-	handlePause: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.pause();
-		}
-	},
-
-	/*
-		Stop playback of a playing video/audio/playlist
-	*/
-	handleStop: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.stop();
-		}
-	},
-
-	/*
-		Rewind a playing video/audio/playlist
-	*/
-	handleRewind: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.rewind();
-		}
-	},
-
-	/*
-		Fast-forward a playing video/audio/playlist
-	*/
-	handleFastForward: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.fastForward();
-		}
-	},
-
-	/*
-		Stop a playing video/audio/playlist
-	*/
-	handleStop: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.stop();
-		}
+	handlePowerOff: function (inSender, inEvent) {
+		app.device.getPowerControl().powerOff();
 	},
 
 	/*
@@ -349,7 +290,7 @@ enyo.kind({
 			if (SamplerEventHandler.mediaPlayer.playlistControl !== null) {
 				SamplerEventHandler.mediaPlayer.playlistControl.release();
 			}
-			SamplerEventHandler.mediaPlayer.mediaControl = playlistControl && playlistControl.acquire();
+			SamplerEventHandler.mediaPlayer.playlistControl = playlistControl && playlistControl.acquire();
 
 			inEvent.callbacks.success(arguments);
 		}).error(inEvent.callbacks.error);
@@ -377,6 +318,100 @@ enyo.kind({
 				SamplerEventHandler.mediaPlayer.playlistControl.release();
 				SamplerEventHandler.mediaPlayer.playlistControl = null;
 			}
+		}
+	},
+
+	/*
+		Resume playback of a paused video/audio/playlist
+	*/
+	handleMediaPlay: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.play();
+		}
+	},
+
+	/*
+		Pause playback of a playing video/audio/playlist
+	*/
+	handleMediaPause: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.pause();
+		}
+	},
+
+	/*
+		Stop playback of a playing video/audio/playlist
+	*/
+	handleMediaStop: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.stop();
+		}
+	},
+
+	/*
+		Rewind a playing video/audio/playlist
+	*/
+	handleMediaRewind: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.rewind();
+		}
+	},
+
+	/*
+		Fast-forward a playing video/audio/playlist
+	*/
+	handleMediaFastForward: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.fastForward();
+		}
+	},
+
+	/*
+		Stop a playing video/audio/playlist
+	*/
+	handleMediaStop: function (inSender, inEvent) {
+		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
+		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
+		if (SamplerEventHandler.mediaPlayer.mediaControl) {
+			SamplerEventHandler.mediaPlayer.mediaControl.stop();
+		}
+	},
+
+	/*
+		Navigate playlist to the previous item
+	*/
+	handleMediaPrevious: function (inSender, inEvent) {
+		if (SamplerEventHandler.mediaPlayer.playlistControl) {
+			SamplerEventHandler.mediaPlayer.playlistControl.previous();
+		}
+	},
+
+	/*
+		Navigate playlist to the next item
+	*/
+	handleMediaNext: function (inSender, inEvent) {
+		if (SamplerEventHandler.mediaPlayer.playlistControl) {
+			SamplerEventHandler.mediaPlayer.playlistControl.next();
+		}
+	},
+
+	/*
+		Navigate playlist to a specific index
+	*/
+	handleMediaJumpToTrack: function (inSender, inEvent) {
+		if (SamplerEventHandler.mediaPlayer.playlistControl) {
+			var itemIndex = inEvent.item;
+			SamplerEventHandler.mediaPlayer.playlistControl.jumpToTrack(itemIndex);
 		}
 	},
 
@@ -522,12 +557,12 @@ enyo.kind({
 		 onButtonVolumeUp: "handleVolumeUp",
 		 onButtonVolumeDown: "handleVolumeDown",
 		 onButtonPress: "",
-		 onButtonPlay: "handlePlay",
-		 onButtonPause: "handlePause",
-		 onButtonStop: "handleStop",
-		 onButtonRewind: "handleRewind",
-		 onButtonFastForward: "handleFastForward",
-		 onButtonPowerOff: "",
+		 onButtonPlay: "",
+		 onButtonPause: "",
+		 onButtonStop: "",
+		 onButtonRewind: "",
+		 onButtonFastForward: "",
+		 onButtonPowerOff: "handlePowerOff",
 		 // Media
 		 onDisplayImage: "handleDisplayImage",
 		 onPlayAudio: "handlePlayAudio",
@@ -535,9 +570,14 @@ enyo.kind({
 		 onPlayVideoWithSubtitles: "handlePlayVideoWithSubtitles",
 		 onPlayPlaylist: "handlePlayPlaylist",
 		 onMediaClose: "handleMediaClose",
-		 onMediaPrevious: "",
-		 onMediaNext: "",
-		 onMediaJumpToTrack: "",
+		 onMediaPlay: "handleMediaPlay",
+		 onMediaPause: "handleMediaPause",
+		 onMediaStop: "handleMediaStop",
+		 onMediaRewind: "handleMediaRewind",
+		 onMediaFastForward: "handleMediaFastForward",
+		 onMediaPrevious: "handleMediaPrevious",
+		 onMediaNext: "handleMediaNext",
+		 onMediaJumpToTrack: "handleMediaJumpToTrack",
 		 onMediaSeekTo: "handleMediaSeekTo",
 		 onMediaGetDuration: "handleMediaGetDuration",
 		 onMediaGetPosition: "handleMediaGetPosition",

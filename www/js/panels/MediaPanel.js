@@ -44,20 +44,20 @@ enyo.kind({
 						{style: "height: 20px"} // Spacer
 					]},
 					{components: [
-						{name: "playButton", kind: "TableButton", style: "width: 33%", content: "PLAY", key: "buttonPlay"},
-						{name: "pauseButton", kind: "TableButton", style: "width: 33%", content: "PAUSE", key: "buttonPause"},
-						{name: "stopButton", kind: "TableButton", style: "width: 33%", content: "STOP", key: "buttonStop"}
+						{name: "playButton", kind: "TableButton", style: "width: 33%", content: "PLAY", key: "mediaPlay"},
+						{name: "pauseButton", kind: "TableButton", style: "width: 33%", content: "PAUSE", key: "mediaPause"},
+						{name: "stopButton", kind: "TableButton", style: "width: 33%", content: "STOP", key: "mediaStop"}
 					]},
 					{components: [
-						{name: "rewindButton", kind: "TableButton", style: "width: 33%", content: "REWIND", key: "buttonRewind"},
-						{name: "fastForwardButton", kind: "TableButton", style: "width: 33%", content: "FAST FORWARD", key: "buttonFastForward"},
+						{name: "rewindButton", kind: "TableButton", style: "width: 33%", content: "REWIND", key: "mediaRewind"},
+						{name: "fastForwardButton", kind: "TableButton", style: "width: 33%", content: "FAST FORWARD", key: "mediaFastForward"},
 						{name: "closeButton", kind: "TableButton", style: "width: 33%", content: "CLOSE", key: "mediaClose"}
 					]},
 					{components: [
 						{style: "height: 20px"} // Spacer
 					]},
 					{components: [
-						{name: "playlistButton", kind: "TableButton", style: "width: 33%", content: "PLAYLIST", key: "playPlaylist"},
+						{name: "playlistButton", kind: "TableButton", style: "width: 33%", content: "PLAYLIST", onButtonPressed: "handlePlaylistButtonPressed"},
 						{kind: "enyo.TableCell", style: "text-align: center; width: 33%;", components: [
 							{name: "subtitlesCheckbox", kind: "CheckboxWithLabel", "content": "Subtitles"}
 						]},
@@ -70,7 +70,7 @@ enyo.kind({
 					{components: [
 						{name: "previousButton", kind: "TableButton", content: "PREV.", key: "mediaPrevious"},
 						{name: "nextButton", kind: "TableButton", content: "NEXT", key: "mediaNext"},
-						{name: "jumpButton", kind: "TableButton", content: "JUMP", key: "mediaJumpToTrack"},
+						{name: "jumpButton", kind: "TableButton", content: "JUMP", onButtonPressed: "handleJumpToTrackPressed"},
 						{kind: "enyo.TableCell", components: [
 							{name: "jumpInput", kind: "Input", attributes: {type: "number", value: 0}, value: 0, style: "width: 60px"}
 						]}
@@ -148,6 +148,11 @@ enyo.kind({
 		} else {
 			enyo.Signals.send("onPlayVideo", {callbacks: {success: this.handleMediaSuccess.bind(this), error: this.handleMediaError.bind(this)}});
 		}
+		return true;
+	},
+
+	handlePlaylistButtonPressed: function (inSender, inEvent) {
+		enyo.Signals.send("onPlayPlaylist", {callbacks: {success: this.handleMediaSuccess.bind(this), error: this.handleMediaError.bind(this)}});
 		return true;
 	},
 
@@ -237,5 +242,9 @@ enyo.kind({
 	},
 
 	handleGetPositionError: function () {
+	},
+
+	handleJumpToTrackPressed: function () {
+		enyo.Signals.send("onMediaJumpToTrack", {item: this.$.jumpInput.value});
 	}
 });
