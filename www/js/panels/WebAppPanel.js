@@ -60,13 +60,13 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.launchWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Launch)));
-		this.$.joinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Join)));
-		this.$.sendMessageButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Message.Send)));
-		this.$.sendJSONButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Message.Send.JSON)));
-		this.$.leaveWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Disconnect)));
-		this.$.closeWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Close)));
-		this.$.pinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Pin)));
-		this.$.unpinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.WebAppLauncher.Pin)));
+		this.$.launchWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Launch)));
+		this.$.joinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Join)));
+		this.$.sendMessageButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Message.Send)));
+		this.$.sendJSONButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Message.Send.JSON)));
+		this.$.leaveWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Disconnect)));
+		this.$.closeWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Close)));
+		this.$.pinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Pin)));
+		this.$.unpinWebAppButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.WebAppLauncher.Pin)));
 	}
 });

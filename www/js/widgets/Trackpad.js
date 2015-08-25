@@ -12,7 +12,8 @@ enyo.kind({
 		ondragstart: "dragStart",
 		ondrag: "drag",
 		ondragfinish: "dragFinish",
-		onmouseup: "mouseup"
+		onmouseup: "mouseup",
+		ontouchend: "mouseup"
 	},
 
 	rendered: function() {
@@ -21,26 +22,27 @@ enyo.kind({
 	},
 
 	disabledChanged: function () {
-		this.removeClass("disabled");
 		if (this.disabled) {
 			this.addClass("disabled");
+			this.mouseConnect = false;
+		} else {
+			this.removeClass("disabled");
+			this.checkMouse();
 		}
 	},
 
 	checkMouse: function () {
 		// connect mouse if necessary
-		if (this.device && !this.mouseConnected) {
-			this.device.getMouseControl().connectMouse();
+		if (this.app.device && !this.mouseConnected && !this.disabled) {
+			enyo.Signals.send("onMouseConnect");
 			this.mouseConnected = true;
 		}
 	},
 
 	mouseTap: function () {
-		console.log("tapped device=" + this.device + " dragged=" + this.dragged);
-		if (this.device && !this.dragged) {
-			console.log("sending click");
+		if (this.app.device && !this.dragged) {
 			this.checkMouse();
-			this.device.getMouseControl().click();
+			enyo.Signals.send("onMouseClick");
 			return true;
 		}
 	},
@@ -65,15 +67,14 @@ enyo.kind({
 	drag: function (sender, event) {
 		var pos = {x: event.clientX, y: event.clientY};
 
-		if (this.lastPos && this.device) {
+		if (this.lastPos && this.app.device) {
 			var dx = pos.x - this.lastPos.x;
 			var dy = pos.y - this.lastPos.y;
 
 			this.checkMouse();
-			this.device.getMouseControl().move(dx, dy);
+			enyo.Signals.send("onMouseMove", {dx: dx, dy: dy});
 		}
 
-		console.log("dragged");
 		this.dragged = true;
 		this.lastPos = pos;
 		return true;

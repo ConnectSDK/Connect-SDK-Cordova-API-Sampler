@@ -99,29 +99,29 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.photoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Display.Image)));
-		this.$.videoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Play.Video)));
-		this.$.audioButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Play.Audio)));
-		this.$.playButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Play)));
-		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Pause)));
-		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Stop)));
-		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Rewind)));
-		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.FastForward)));
-		this.$.closeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Close)));
-		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.SRT) || this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.WebVTT)));
-		this.$.subtitlesCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Loop)));
-		this.$.loopCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaPlayer.Loop)));
-		this.$.previousButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Previous)));
-		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.Next)));
-		this.$.jumpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.JumpToTrack)));
-		this.$.jumpInput.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.PlaylistControl.JumpToTrack)));
-		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Set)) {
+		this.$.photoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Display.Image)));
+		this.$.videoButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Play.Video)));
+		this.$.audioButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Play.Audio)));
+		this.$.playButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Play)));
+		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Pause)));
+		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Stop)));
+		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Rewind)));
+		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.FastForward)));
+		this.$.closeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Close)));
+		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.SRT) || this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.WebVTT)));
+		this.$.subtitlesCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Loop)));
+		this.$.loopCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Loop)));
+		this.$.previousButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.PlaylistControl.Previous)));
+		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.PlaylistControl.Next)));
+		this.$.jumpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.PlaylistControl.JumpToTrack)));
+		this.$.jumpInput.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.PlaylistControl.JumpToTrack)));
+		if (this.app.deviceHasCapability(ConnectSDK.Capabilities.VolumeControl.Set)) {
 			this.$.volumeSlider.removeClass("disabled");
 			this.subscribeVolume();
 		} else {
 			this.$.volumeSlider.addClass("disabled");
 		}
-		if (!this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Seek)) {
+		if (!this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Seek)) {
 			this.$.seekSlider.addClass("disabled");
 		}
 	},
@@ -164,7 +164,7 @@ enyo.kind({
 	},
 
 	handleMediaSuccess: function () {
-		if (this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Seek)) {
+		if (this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Seek)) {
 			this.$.seekSlider.removeClass("disabled");
 			if (this.getPositionInterval !== null) {
 				clearInterval(this.getPositionInterval);

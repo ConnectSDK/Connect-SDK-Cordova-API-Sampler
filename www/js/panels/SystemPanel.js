@@ -19,7 +19,8 @@ enyo.kind({
 	},
 
 	published: {
-		muteChecked: false
+		muteChecked: false,
+		inputList: new enyo.Collection()
 	},
 
 	handleButton: function (inSender, inEvent) {
@@ -60,6 +61,15 @@ enyo.kind({
 					{components: [
 						{name: "inputPickerButton", kind: "TableButton", content: "INPUT PICKER", key: "showInputPicker"},
 					]}
+				]},
+				{name: "inputList", kind: "enyo.DataRepeater", components: [
+					{kind: "onyx.Item", classes: "input-item", ontap: "openInput", components: [
+						{name: "inputId", classes: "input-id"},
+						{name: "inputName", classes: "input-name"}
+					], bindings: [
+						{from: ".model.id", to: ".$.inputId.content"},
+						{from: ".model.name", to: ".$.inputName.content"}
+					]}
 				]}
 			]}
 		]},
@@ -67,7 +77,8 @@ enyo.kind({
 	],
 
 	bindings: [
-		{from: ".muteChecked", to: ".$.muteCheckbox.checked", oneWay: false}
+		{from: ".muteChecked", to: ".$.muteCheckbox.checked", oneWay: false},
+		{from: ".inputList", to: ".$.inputList.collection"}
 	],
 
 	rendered: function () {
@@ -76,24 +87,31 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Set)) {
+		if (this.app.deviceHasCapability(ConnectSDK.Capabilities.VolumeControl.Set)) {
 			this.$.volumeSlider.removeClass("disabled");
 			this.subscribeVolume();
 		} else {
 			this.$.volumeSlider.addClass("disabled");
 		}
-		this.$.muteCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Mute.Set)));
-		this.$.volumeDownButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.UpDown)));
-		this.$.volumeUpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.UpDown)));
-		this.$.playButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Play)));
-		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Pause)));
-		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Stop)));
-		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.Rewind)));
-		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.MediaControl.FastForward)));
-		this.$.inputPickerButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.capabilities.ExternalInputControl.Picker.Launch)));
 
-		if (this.app.deviceHasCapability(ConnectSDK.capabilities.VolumeControl.Mute.Get)) {
+		this.$.muteCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.VolumeControl.Mute.Set)));
+		this.$.volumeDownButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.VolumeControl.UpDown)));
+		this.$.volumeUpButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.VolumeControl.UpDown)));
+		this.$.playButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Play)));
+		this.$.pauseButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Pause)));
+		this.$.stopButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Stop)));
+		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Rewind)));
+		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.FastForward)));
+		this.$.inputPickerButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.ExternalInputControl.Picker.Launch)));
+
+		if (this.app.deviceHasCapability(ConnectSDK.Capabilities.VolumeControl.Mute.Get)) {
 			this.subscribeMute();
+		}
+
+		if (this.app.deviceHasCapability(ConnectSDK.Capabilities.ExternalInputControl.List)) {
+			this.getInputList();
+		} else {
+			this.inputList.destroyAllLocal();
 		}
 	},
 
@@ -126,5 +144,33 @@ enyo.kind({
 
 	muteCheckedChanged: function () {
 		enyo.Signals.send("onSetMute", {mute: this.$.muteCheckbox.checked});
+	},
+
+	getInputList: function () {
+		enyo.Signals.send("onGetExternalInputList", {callbacks: {success: this.handleGotInputList.bind(this), error: this.handleGetInputListError.bind(this)}});
+	},
+
+	handleGotInputList: function (inputs) {
+		inputs.sort(function (a, b) {
+			if (a.name < b.name) {
+				return -1;
+			} else if (a.name > b.name) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+
+		// This will wrap the channel list into enyo.Model instances
+		this.inputList.destroyAllLocal();
+		this.inputList.reset(inputs);
+	},
+
+	handleGetInputListError: function (err) {
+		this.app.showError(err);
+	},
+
+	openInput: function (inSender, inEvent) {
+		enyo.Signals.send("onOpenExternalInput", {input: inSender.model.attributes});
 	}
 });

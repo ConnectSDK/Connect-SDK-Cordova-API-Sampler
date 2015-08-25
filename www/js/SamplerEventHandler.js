@@ -55,6 +55,55 @@ enyo.kind({
 	},
 
 	/*
+		Launch the browser
+	*/
+	handleLaunchBrowser: function (inSender, inEvent) {
+		var url = inEvent.url;
+		app.device.getLauncher().launchBrowser(url);
+	},
+
+	/*
+		Open Netflix
+	*/
+	handleOpenNetflix: function (inSender, inEvent) {
+		var contentId = inEvent.contentId; // A string, should be the content to load
+		app.device.getLauncher().launchNetflix(contentId);
+	},
+
+	/*
+		List the device's installed apps
+	*/
+	handleGetAppList: function (inSender, inEvent) {
+		app.device.getLauncher().getAppList().success(function (apps) {
+			// Inputs contains an array of apps
+
+			if (inEvent.callbacks.success) {
+				inEvent.callbacks.success(apps);
+			}
+		}).error(function (err) {
+			if (inEvent.callbacks.error) {
+				inEvent.callbacks.error(err);
+			}
+		});
+	},
+
+	/*
+		Open an app on the device
+	*/
+	handleOpenApp: function (inSender, inEvent) {
+		var appId = inEvent.app.id; // String, the appId can be obtained from the app listing in Launcher.getAppList - see handleGetAppList
+		app.device.getLauncher().launchApp(appId);
+	},
+
+	/*
+		Tune the TV to a specific channel
+	*/
+	handleSetChannel: function (inSender, inEvent) {
+		var channelInfo = inEvent.channel; // Should be a ChannelInfo object (returned from TVControl.getChannelList; see handleGetChannelList sample
+		app.device.getTVControl().setChannel(channelInfo);
+	},
+
+	/*
 		Get the list of channels from the TV
 	*/
 	handleGetChannelList: function (inSender, inEvent) {
@@ -254,6 +303,54 @@ enyo.kind({
 	},
 
 	/*
+		List the device's external inputs
+	*/
+	handleGetExternalInputList: function (inSender, inEvent) {
+		app.device.getExternalInputControl().getExternalInputList().success(function (inputs) {
+			// Inputs contains an array of external inputs
+
+			if (inEvent.callbacks.success) {
+				inEvent.callbacks.success(inputs);
+			}
+		}).error(function (err) {
+			if (inEvent.callbacks.error) {
+				inEvent.callbacks.error(err);
+			}
+		});
+	},
+
+	/*
+		Switch the device to an external input
+	*/
+	handleOpenExternalInput: function (inSender, inEvent) {
+		var input = inEvent.input; // Should be a ExternalInputInfo object (returned from ExternalInputControl.getExternalInputList; see handleGetExternalInputList sample
+		app.device.getExternalInputControl().setExternalInput(input);
+	},
+
+	/*
+		Connect the mouse
+	*/
+	handleMouseConnect: function (inSender, inEvent) {
+		app.device.getMouseControl().connectMouse();
+	},
+
+	/*
+		Move the mouse
+	*/
+	handleMouseMove: function (inSender, inEvent) {
+		var dx = inEvent.dx; // Integer, the change in x position of the mouse
+		var dy = inEvent.dy; // Integer, the change in y position of the mouse
+		app.device.getMouseControl().move(dx, dy);
+	},
+
+	/*
+		Click the mouse
+	*/
+	handleMouseClick: function (inSender, inEvent) {
+		app.device.getMouseControl().click();
+	},
+
+	/*
 		Display an image
 	*/
 	handleDisplayImage: function (inSender, inEvent) {
@@ -352,12 +449,12 @@ enyo.kind({
 		};
 
 		// Subtitles
-		if (app.device.hasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.WebVTT) || app.device.hasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.SRT)) {
+		if (app.device.hasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.WebVTT) || app.device.hasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.SRT)) {
 			options.subtitles = {
-				url: app.device.hasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.WebVTT) ? SamplerEventHandler.video.subtitles.WebVTT.url : SamplerEventHandler.video.subtitles.SRT.url,
+				url: app.device.hasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.WebVTT) ? SamplerEventHandler.video.subtitles.WebVTT.url : SamplerEventHandler.video.subtitles.SRT.url,
 				label: SamplerEventHandler.video.subtitles.label,
 				language: SamplerEventHandler.video.subtitles.language,
-				mimeType: app.device.hasCapability(ConnectSDK.capabilities.MediaPlayer.Subtitle.WebVTT) ? SamplerEventHandler.video.subtitles.WebVTT.mimeType : SamplerEventHandler.video.subtitles.SRT.mimeType
+				mimeType: app.device.hasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.WebVTT) ? SamplerEventHandler.video.subtitles.WebVTT.mimeType : SamplerEventHandler.video.subtitles.SRT.mimeType
 			};
 		}
 
@@ -656,17 +753,17 @@ enyo.kind({
 		// Hook handlers into UI
 		{kind: "enyo.Signals",
 		 // Apps
-		 onOpenGoogle: "",
+		 onLaunchBrowser: "handleLaunchBrowser",
 		 onOpenDIALApp: "",
 		 onShowToast: "",
-		 onOpenNetflix: "",
+		 onOpenNetflix: "handleOpenNetflix",
 		 onOpenAppStore: "",
 		 onOpenYoutube: "",
 		 onLaunchApp: "",
-		 onGetAppList: "",
-		 onOpenApp: "",
+		 onGetAppList: "handleGetAppList",
+		 onOpenApp: "handleOpenApp",
 		 // TV
-		 onOpenChannel: "",
+		 onSetChannel: "handleSetChannel",
 		 onGetChannelList: "handleGetChannelList",
 		 onChannelUp: "handleChannelUp",
 		 onChannelDown: "handleChannelDown",
@@ -693,12 +790,12 @@ enyo.kind({
 		 onButtonRewind: "handleButtonRewind",
 		 onButtonFastForward: "handleButtonFastForward",
 		 onButtonPowerOff: "handlePowerOff",
-		 onGetExternalInputList: "",
-		 onOpenExternalInput: "",
+		 onGetExternalInputList: "handleGetExternalInputList",
+		 onOpenExternalInput: "handleOpenExternalInput",
 		 onShowInputPicker: "",
-		 onMoveMouse: "",
-		 onClickMouse: "",
-		 onScrollMouse: "",
+		 onMouseConnect: "handleMouseConnect",
+		 onMouseMove: "handleMouseMove",
+		 onMouseClick: "handleMouseClick",
 		 // Media
 		 onDisplayImage: "handleDisplayImage",
 		 onPlayAudio: "handlePlayAudio",
