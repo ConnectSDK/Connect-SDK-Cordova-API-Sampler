@@ -29,25 +29,25 @@ enyo.kind({
 		{kind: "enyo.FittableRows", classes: "enyo-fit", components: [
 			{kind: "enyo.Table", style: "width: 100%", components: [
 				{components: [
-					{name: "backButton", kind: "TableButton", content: "Back", key: "buttonBack"},
-					{},
-					{name: "homeButton", kind: "TableButton", content: "Home", key: "buttonHome"}
+					{name: "backButton", kind: "TableButton", style: "width: 33%", content: "Back", key: "buttonBack"},
+					{style: "width: 33%"},
+					{name: "homeButton", kind: "TableButton", style: "width: 33%", content: "Home", key: "buttonHome"}
 				]},
 
 				{components: [
-					{},
-					{name: "upButton", kind: "TableButton", content: "Up", key: "buttonUp"},
-					{}
+					{style: "width: 33%"},
+					{name: "upButton", kind: "TableButton", style: "width: 33%", content: "Up", key: "buttonUp"},
+					{style: "width: 33%"}
 				]},
 				{components: [
-					{name: "leftButton", kind: "TableButton", content: "Left", key: "buttonLeft"},
-					{name: "enterButton", kind: "TableButton", content: "Click", key: "buttonOK"},
-					{name: "rightButton", kind: "TableButton", content: "Right", key: "buttonRight"}
+					{name: "leftButton", kind: "TableButton", style: "width: 33%", content: "Left", key: "buttonLeft"},
+					{name: "enterButton", kind: "TableButton", style: "width: 33%", content: "Click", key: "buttonOK"},
+					{name: "rightButton", kind: "TableButton", style: "width: 33%", content: "Right", key: "buttonRight"}
 				]},
 				{components: [
-					{},
-					{name: "downButton", kind: "TableButton", content: "Down", key: "buttonDown"},
-					{}
+					{style: "width: 33%"},
+					{name: "downButton", kind: "TableButton", style: "width: 33%", content: "Down", key: "buttonDown"},
+					{style: "width: 33%"}
 				]},
 			]},
 			{name: "pad", kind: "Trackpad", fit: true}

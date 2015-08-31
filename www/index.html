@@ -40,6 +40,10 @@ under the License.
 			}
 
 			if (window.cordova) {
+				window.shouldRotateToOrientation = function(degrees) {
+					return true;
+				}
+
 				document.addEventListener("deviceready", function () {
 					main();
 				});

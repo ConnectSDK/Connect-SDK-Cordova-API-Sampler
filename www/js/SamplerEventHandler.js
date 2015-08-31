@@ -4,6 +4,8 @@ enyo.kind({
 
 	statics: {
 		webAppId: "SampleWebApp",
+		dialAppId: "Levak",
+		youtubeContentId: "eRsGyueVLvQ",
 		webAppSession: null,
 		image: {
 			url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photo.jpg",
@@ -56,6 +58,7 @@ enyo.kind({
 
 	/*
 		Launch the browser
+		Capabilities: Launcher.Browser, Launcher.Browser.Params
 	*/
 	handleLaunchBrowser: function (inSender, inEvent) {
 		var url = inEvent.url;
@@ -63,15 +66,61 @@ enyo.kind({
 	},
 
 	/*
-		Open Netflix
+		Launch a DIAL app
+		Capabilities: Launcher.App, Launcher.App.Params
 	*/
-	handleOpenNetflix: function (inSender, inEvent) {
+	handleLaunchDIALApp: function (inSender, inEvent) {
+		var appId = SamplerEventHandler.dialAppId;
+		app.device.getLauncher().launchApp(appId);
+	},
+
+	/*
+		Show a notification on the device (toast)
+		Capabilities: ToastControl.Show, ToastControl.Show.Toast
+	*/
+	handleShowToast: function (inSender, inEvent) {
+		app.device.getExternalInputControl().showInputPicker();
+	},
+
+	/*
+		Open Netflix
+		Capabilities: Launcher.Netflix, Launcher.Netflix.Params
+	*/
+	handleLaunchNetflix: function (inSender, inEvent) {
 		var contentId = inEvent.contentId; // A string, should be the content to load
 		app.device.getLauncher().launchNetflix(contentId);
 	},
 
 	/*
+		Launch the device app store with optional deep linking
+		Capabilities: Launcher.AppStore, Launcher.AppStore.Params
+	*/
+	handleLaunchAppStore: function (inSender, inEvent) {
+		var appId;
+		// To deep link to an app we need the app id
+		/*
+		if (getTv().getServiceByName("Netcast TV") != null)
+			appId = "125071";
+		else if (getTv().getServiceByName("webOS TV") != null)
+			appId = "redbox";
+		else if (getTv().getServiceByName("Roku") != null)
+			appId = "13535";
+		*/
+		app.device.getLauncher().launchAppStore(appId);
+	},
+
+	/*
+		Launch Youtube with optional deep linking to a video
+		Capabilities: Launcher.YouTube, Launcher.YouTube.Params
+	*/
+	handleLaunchYoutube: function (inSender, inEvent) {
+		var contentId = SamplerEventHandler.youtubeContentId;
+		app.device.getLauncher().launchYouTube(contentId);
+	},
+
+	/*
 		List the device's installed apps
+		Capabilities: Launcher.App.List
 	*/
 	handleGetAppList: function (inSender, inEvent) {
 		app.device.getLauncher().getAppList().success(function (apps) {
@@ -89,6 +138,7 @@ enyo.kind({
 
 	/*
 		Open an app on the device
+		Capabilities: Launcher.App
 	*/
 	handleOpenApp: function (inSender, inEvent) {
 		var appId = inEvent.app.id; // String, the appId can be obtained from the app listing in Launcher.getAppList - see handleGetAppList
@@ -97,6 +147,7 @@ enyo.kind({
 
 	/*
 		Tune the TV to a specific channel
+		Capabilities: TVControl.Channel.Set
 	*/
 	handleSetChannel: function (inSender, inEvent) {
 		var channelInfo = inEvent.channel; // Should be a ChannelInfo object (returned from TVControl.getChannelList; see handleGetChannelList sample
@@ -105,6 +156,7 @@ enyo.kind({
 
 	/*
 		Get the list of channels from the TV
+		Capabilities: TVControl.Channel.List
 	*/
 	handleGetChannelList: function (inSender, inEvent) {
 		app.device.getTVControl().getChannelList().success(function (channels) {
@@ -117,6 +169,7 @@ enyo.kind({
 
 	/*
 		TV Channel Up
+		Capabilities: TVControl.Channel.Up
 	*/
 	handleChannelUp: function (inSender, inEvent) {
 		app.device.getTVControl().channelUp();
@@ -124,6 +177,7 @@ enyo.kind({
 
 	/*
 		TV Channel Down
+		Capabilities: TVControl.Channel.Down
 	*/
 	handleChannelDown: function (inSender, inEvent) {
 		app.device.getTVControl().channelDown();
@@ -131,6 +185,7 @@ enyo.kind({
 
 	/*
 		Set the mute status
+		Capabilities: VolumeControl.Mute.Set
 	*/
 	handleSetMute: function (inSender, inEvent) {
 		var mute = inEvent.mute; // Boolean
@@ -139,6 +194,7 @@ enyo.kind({
 
 	/*
 		Get the mute status
+		Capabilities: VolumeControl.Mute.Get
 	*/
 	handleGetMute: function (inSender, inEvent) {
 		app.device.getVolumeControl().getMute().success(function (mute) {
@@ -149,6 +205,7 @@ enyo.kind({
 
 	/*
 		Subscribe to receive updates to the mute status
+		Capabilities: VolumeControl.Mute.Subscribe
 	*/
 	handleSubscribeMute: function (inSender, inEvent) {
 		var subscription = app.device.getVolumeControl().subscribeMute().success(function (mute) {
@@ -161,6 +218,7 @@ enyo.kind({
 
 	/*
 		Set the volume
+		Capabilities: VolumeControl.Set
 	*/
 	handleSetVolume: function (inSender, inEvent) {
 		var volume = inEvent.volume; // Should be a decimal percentage (e.g. 0.10)
@@ -169,6 +227,7 @@ enyo.kind({
 
 	/*
 		Get the current volume
+		Capabilities: VolumeControl.Get
 	*/
 	handleGetVolume: function (inSender, inEvent) {
 		app.device.getVolumeControl().getVolume().success(function (volume) {
@@ -179,6 +238,7 @@ enyo.kind({
 
 	/*
 		Subscribe to receive updates when the volume changes
+		Capabilities: VolumeControl.Subscribe
 	*/
 	handleSubscribeVolume: function (inSender, inEvent) {
 		var subscription = app.device.getVolumeControl().subscribeVolume().success(function (volume) {
@@ -191,6 +251,7 @@ enyo.kind({
 
 	/*
 		Increase the volume by 1
+		Capabilities: VolumeControl.UpDown
 	*/
 	handleVolumeUp: function (inSender, inEvent) {
 		app.device.getVolumeControl().volumeUp();
@@ -198,6 +259,7 @@ enyo.kind({
 
 	/*
 		Decrease the volume by 1
+		Capabilities: VolumeControl.UpDown
 	*/
 	handleVolumeDown: function (inSender, inEvent) {
 		app.device.getVolumeControl().volumeDown();
@@ -205,6 +267,7 @@ enyo.kind({
 
 	/*
 		Simulate remote button press
+		Capabilities: KeyControl.KeyCode
 	*/
 	handleButtonPress: function (inSender, inEvent) {
 		var keyCode = inEvent.keyCode; // Integer, key codes can be referenced through the ConnectSDK.KeyCodes constant
@@ -213,6 +276,7 @@ enyo.kind({
 
 	/*
 		Simulate up press
+		Capabilities: KeyControl.Up
 	*/
 	handleButtonUp: function (inSender, inEvent) {
 		app.device.getKeyControl().up();
@@ -220,6 +284,7 @@ enyo.kind({
 
 	/*
 		Simulate down press
+		Capabilities: KeyControl.Down
 	*/
 	handleButtonDown: function (inSender, inEvent) {
 		app.device.getKeyControl().down();
@@ -227,6 +292,7 @@ enyo.kind({
 
 	/*
 		Simulate left press
+		Capabilities: KeyControl.Left
 	*/
 	handleButtonLeft: function (inSender, inEvent) {
 		app.device.getKeyControl().left();
@@ -234,6 +300,7 @@ enyo.kind({
 
 	/*
 		Simulate right press
+		Capabilities: KeyControl.Right
 	*/
 	handleButtonRight: function (inSender, inEvent) {
 		app.device.getKeyControl().right();
@@ -241,6 +308,7 @@ enyo.kind({
 
 	/*
 		Simulate OK press
+		Capabilities: KeyControl.OK
 	*/
 	handleButtonOK: function (inSender, inEvent) {
 		app.device.getKeyControl().ok();
@@ -248,6 +316,7 @@ enyo.kind({
 
 	/*
 		Simulate home press
+		Capabilities: KeyControl.Home
 	*/
 	handleButtonHome: function (inSender, inEvent) {
 		app.device.getKeyControl().home();
@@ -255,6 +324,7 @@ enyo.kind({
 
 	/*
 		Simulate back press
+		Capabilities: KeyControl.Back
 	*/
 	handleButtonBack: function (inSender, inEvent) {
 		app.device.getKeyControl().back();
@@ -262,6 +332,7 @@ enyo.kind({
 
 	/*
 		Resume media playback
+		Capabilities: MediaControl.Play
 	*/
 	handleButtonPlay: function (inSender, inEvent) {
 		app.device.getMediaControl().play();
@@ -269,6 +340,7 @@ enyo.kind({
 
 	/*
 		Pause media playback
+		Capabilities: MediaControl.Pause
 	*/
 	handleButtonPause: function (inSender, inEvent) {
 		app.device.getMediaControl().pause();
@@ -276,6 +348,7 @@ enyo.kind({
 
 	/*
 		Stop media playback
+		Capabilities: MediaControl.Stop
 	*/
 	handleButtonStop: function (inSender, inEvent) {
 		app.device.getMediaControl().stop();
@@ -283,6 +356,7 @@ enyo.kind({
 
 	/*
 		Rewind media
+		Capabilities: MediaControl.Rewind
 	*/
 	handleButtonRewind: function (inSender, inEvent) {
 		app.device.getMediaControl().rewind();
@@ -290,6 +364,7 @@ enyo.kind({
 
 	/*
 		Fast forward media
+		Capabilities: MediaControl.FastForward
 	*/
 	handleButtonFastForward: function (inSender, inEvent) {
 		app.device.getMediaControl().fastForward();
@@ -297,6 +372,7 @@ enyo.kind({
 
 	/*
 		Power off the device
+		Capabilities: PowerControl.Off
 	*/
 	handlePowerOff: function (inSender, inEvent) {
 		app.device.getPowerControl().powerOff();
@@ -304,6 +380,7 @@ enyo.kind({
 
 	/*
 		List the device's external inputs
+		Capabilities: ExternalInputControl.List
 	*/
 	handleGetExternalInputList: function (inSender, inEvent) {
 		app.device.getExternalInputControl().getExternalInputList().success(function (inputs) {
@@ -321,6 +398,7 @@ enyo.kind({
 
 	/*
 		Switch the device to an external input
+		Capabilities: ExternalInputControl.Set
 	*/
 	handleOpenExternalInput: function (inSender, inEvent) {
 		var input = inEvent.input; // Should be a ExternalInputInfo object (returned from ExternalInputControl.getExternalInputList; see handleGetExternalInputList sample
@@ -328,7 +406,16 @@ enyo.kind({
 	},
 
 	/*
+		Show the device's input picker
+		Capabilities: ExternalInputControl.Picker.Launch
+	*/
+	handleShowInputPicker: function (inSender, inEvent) {
+		app.device.getExternalInputControl().showExternalInputPicker();
+	},
+
+	/*
 		Connect the mouse
+		Capabilities: MouseControl.Connect
 	*/
 	handleMouseConnect: function (inSender, inEvent) {
 		app.device.getMouseControl().connectMouse();
@@ -336,6 +423,7 @@ enyo.kind({
 
 	/*
 		Move the mouse
+		Capabilities: MouseControl.Move
 	*/
 	handleMouseMove: function (inSender, inEvent) {
 		var dx = inEvent.dx; // Integer, the change in x position of the mouse
@@ -345,6 +433,7 @@ enyo.kind({
 
 	/*
 		Click the mouse
+		Capabilities: MouseControl.Click
 	*/
 	handleMouseClick: function (inSender, inEvent) {
 		app.device.getMouseControl().click();
@@ -352,6 +441,7 @@ enyo.kind({
 
 	/*
 		Display an image
+		Capabilities: MediaPlayer.Display.Image
 	*/
 	handleDisplayImage: function (inSender, inEvent) {
 		var url = SamplerEventHandler.image.url;
@@ -374,6 +464,7 @@ enyo.kind({
 
 	/*
 		Play audio
+		Capabilities: MediaPlayer.Play.Audio
 	*/
 	handlePlayAudio: function (inSender, inEvent) {
 		var url = SamplerEventHandler.audio.url;
@@ -405,6 +496,7 @@ enyo.kind({
 
 	/*
 		Play video
+		Capabilities: MediaPlayer.Play.Video
 	*/
 	handlePlayVideo: function (inSender, inEvent) {
 		var url = SamplerEventHandler.video.url;
@@ -436,6 +528,7 @@ enyo.kind({
 
 	/*
 		Play video with subtitles (depending on device capabilities)
+		Capabilities: MediaPlayer.Play.Video, MediaPlayer.Subtitle.SRT, MediaPlayer.Subtitle.WebVTT
 	*/
 	handlePlayVideoWithSubtitles: function (inSender, inEvent) {
 		var url = SamplerEventHandler.video.url;
@@ -592,17 +685,6 @@ enyo.kind({
 	},
 
 	/*
-		Stop a playing video/audio/playlist
-	*/
-	handleMediaStop: function (inSender, inEvent) {
-		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
-		// See handlePlayAudio, handlePlayVideo, handlePlayVideoWithSubtitles and handlePlayPlaylist for samples
-		if (SamplerEventHandler.mediaPlayer.mediaControl) {
-			SamplerEventHandler.mediaPlayer.mediaControl.stop();
-		}
-	},
-
-	/*
 		Navigate playlist to the previous item
 	*/
 	handleMediaPrevious: function (inSender, inEvent) {
@@ -754,12 +836,12 @@ enyo.kind({
 		{kind: "enyo.Signals",
 		 // Apps
 		 onLaunchBrowser: "handleLaunchBrowser",
-		 onOpenDIALApp: "",
-		 onShowToast: "",
-		 onOpenNetflix: "handleOpenNetflix",
-		 onOpenAppStore: "",
-		 onOpenYoutube: "",
-		 onLaunchApp: "",
+		 onLaunchDIALApp: "handleLaunchDIALApp",
+		 onShowToast: "handleShowToast",
+		 onLaunchNetflix: "handleLaunchNetflix",
+		 onLaunchAppStore: "handleLaunchAppStore",
+		 onLaunchYoutube: "handleLaunchYoutube",
+		 onLaunchApp: "handleLaunchApp",
 		 onGetAppList: "handleGetAppList",
 		 onOpenApp: "handleOpenApp",
 		 // TV
@@ -792,7 +874,7 @@ enyo.kind({
 		 onButtonPowerOff: "handlePowerOff",
 		 onGetExternalInputList: "handleGetExternalInputList",
 		 onOpenExternalInput: "handleOpenExternalInput",
-		 onShowInputPicker: "",
+		 onShowInputPicker: "handleShowInputPicker",
 		 onMouseConnect: "handleMouseConnect",
 		 onMouseMove: "handleMouseMove",
 		 onMouseClick: "handleMouseClick",

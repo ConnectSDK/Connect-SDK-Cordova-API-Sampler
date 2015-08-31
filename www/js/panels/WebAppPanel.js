@@ -33,20 +33,20 @@ enyo.kind({
 			{kind: "enyo.FittableRows", components: [
 				{kind: "enyo.Table", style: "width: 100%", components: [
 					{components: [
-						{name: "launchWebAppButton", kind: "TableButton", content: "LAUNCH", key: "launchWebApp"},
-						{name: "joinWebAppButton", kind: "TableButton", content: "JOIN", key: "joinWebApp"}
+						{name: "launchWebAppButton", kind: "TableButton", style: "width: 50%", content: "LAUNCH", key: "launchWebApp"},
+						{name: "joinWebAppButton", kind: "TableButton", style: "width: 50%", content: "JOIN", key: "joinWebApp"}
 					]},
 					{components: [
-						{name: "sendMessageButton", kind: "TableButton", content: "SEND MESSAGE", key: "sendMessage", data: {message: "This is a Cordova test message."}},
-						{name: "sendJSONButton", kind: "TableButton", content: "SEND JSON", key: "sendJSON", data: {message: {type: "message", "contents": "This is a test message"}}}
+						{name: "sendMessageButton", kind: "TableButton", style: "width: 50%", content: "SEND MESSAGE", key: "sendMessage", data: {message: "This is a Cordova test message."}},
+						{name: "sendJSONButton", kind: "TableButton", style: "width: 50%", content: "SEND JSON", key: "sendJSON", data: {message: {type: "message", "contents": "This is a test message"}}}
 					]},
 					{components: [
-						{name: "leaveWebAppButton", kind: "TableButton", content: "LEAVE WEBAPP", key: "leaveWebApp"},
-						{name: "closeWebAppButton", kind: "TableButton", content: "CLOSE WEBAPP", key: "closeWebApp"}
+						{name: "leaveWebAppButton", kind: "TableButton", style: "width: 50%", content: "LEAVE WEBAPP", key: "leaveWebApp"},
+						{name: "closeWebAppButton", kind: "TableButton", style: "width: 50%", content: "CLOSE WEBAPP", key: "closeWebApp"}
 					]},
 					{components: [
-						{name: "pinWebAppButton", kind: "TableButton", content: "PIN WEB APP", key: "pinWebApp"},
-						{name: "unpinWebAppButton", kind: "TableButton", content: "UNPIN WEB APP", key: "unpinWebApp"}
+						{name: "pinWebAppButton", kind: "TableButton", style: "width: 50%", content: "PIN WEB APP", key: "pinWebApp"},
+						{name: "unpinWebAppButton", kind: "TableButton", style: "width: 50%", content: "UNPIN WEB APP", key: "unpinWebApp"}
 					]}
 				]}
 			]}

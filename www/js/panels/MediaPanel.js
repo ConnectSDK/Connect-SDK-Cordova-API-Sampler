@@ -131,7 +131,10 @@ enyo.kind({
 	},
 
 	handleGotVolume: function (volume) {
-		this.$.volumeSlider.animateTo(volume);
+		// Only update the slider if it is not being interacted with
+		if (!this.$.volumeSlider.$.knob.hasClass("pressed")) {
+			this.$.volumeSlider.animateTo(volume);
+		}
 	},
 
 	handleGetVolumeError: function (err) {
@@ -224,22 +227,25 @@ enyo.kind({
 	},
 
 	handleGotPosition: function (position) {
-		this.$.seekSlider.animateTo(position);
+		// Only update the position if the user is not interacting with the seek slider
+		if (!this.$.seekSlider.$.knob.hasClass("pressed")) {
+			this.$.seekSlider.animateTo(position);
 
-		var minutes = Math.floor(position / 60);
-		var seconds = position - (minutes * 60);
+			var minutes = Math.floor(position / 60);
+			var seconds = position - (minutes * 60);
 
-		if (minutes < 10) {
-			minutes = "0" + minutes;
+			if (minutes < 10) {
+				minutes = "0" + minutes;
+			}
+			if (seconds < 10) {
+				seconds = "0" + seconds;
+			}
+			var time = minutes + ':' + seconds;
+
+			this.$.positionLabel.setContent(time);
+
+			this.$.progressColumns.resized();
 		}
-		if (seconds < 10) {
-			seconds = "0" + seconds;
-		}
-		var time = minutes + ':' + seconds;
-
-		this.$.positionLabel.setContent(time);
-
-		this.$.progressColumns.resized();
 	},
 
 	handleGetPositionError: function (err) {

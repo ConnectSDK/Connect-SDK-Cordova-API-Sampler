@@ -33,16 +33,16 @@ enyo.kind({
 			{kind: "enyo.FittableRows", style: "width: 100%", components: [
 				{kind: "enyo.Table", style: "width: 100%", components: [
 					{components: [
-						{name: "googleButton", kind: "TableButton", content: "OPEN GOOGLE", key: "launchBrowser", data: {url: "http://google.com"}},
-						{name: "dialButton", kind: "TableButton", content: "MY DIAL APP", key: "openDIALApp"},
+						{name: "googleButton", kind: "TableButton", style: "width: 50%", content: "OPEN GOOGLE", key: "launchBrowser", data: {url: "http://google.com"}},
+						{name: "dialButton", kind: "TableButton", style: "width: 50%", content: "MY DIAL APP", key: "launchDIALApp"},
 					]},
 					{components: [
-						{name: "netflixButton", kind: "TableButton", content: "NETFLIX", key: "openNetflix", data: {contentId: "70217913"}},
-						{name: "youtubeButton", kind: "TableButton", content: "YOUTUBE", key: "openYoutube"}
+						{name: "netflixButton", kind: "TableButton", style: "width: 50%", content: "NETFLIX", key: "launchNetflix", data: {contentId: "70217913"}},
+						{name: "youtubeButton", kind: "TableButton", style: "width: 50%", content: "YOUTUBE", key: "launchYoutube"}
 					]},
 					{components: [
-						{name: "appStoreButton", kind: "TableButton", content: "APP STORE", key: "openAppStore"},
-						{name: "toastButton", kind: "TableButton", content: "SHOW TOAST", key: "showToast"}
+						{name: "appStoreButton", kind: "TableButton", style: "width: 50%", content: "APP STORE", key: "launchAppStore"},
+						{name: "toastButton", kind: "TableButton", style: "width: 50%", content: "SHOW TOAST", key: "showToast"}
 					]}
 				]},
 				{name: "appList", kind: "enyo.DataRepeater", components: [
@@ -69,11 +69,11 @@ enyo.kind({
 	},
 
 	handleCapabilitiesChanged: function () {
-		this.$.googleButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.Browser) || this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.Browser.Params)));
+		this.$.googleButton.setDisabled(!(this.app.deviceSupportsAny([ConnectSDK.Capabilities.Launcher.Browser, ConnectSDK.Capabilities.Launcher.Browser.Params])));
 		this.$.dialButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.Levak));
-		this.$.youtubeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.YouTube) || this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.YouTube.Params)));
-		this.$.netflixButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.Netflix) || this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.Netflix.Params)));
-		this.$.appStoreButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.AppStore) || this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.AppStore.Params)));
+		this.$.youtubeButton.setDisabled(!(this.app.deviceSupportsAny([ConnectSDK.Capabilities.Launcher.YouTube, ConnectSDK.Capabilities.Launcher.YouTube.Params])));
+		this.$.netflixButton.setDisabled(!(this.app.deviceSupportsAny([ConnectSDK.Capabilities.Launcher.Netflix, ConnectSDK.Capabilities.Launcher.Netflix.Params])));
+		this.$.appStoreButton.setDisabled(!(this.app.deviceSupportsAny([ConnectSDK.Capabilities.Launcher.AppStore, ConnectSDK.Capabilities.Launcher.AppStore.Params])));
 		this.$.toastButton.setDisabled(!this.app.deviceHasCapability(ConnectSDK.Capabilities.ToastControl.Show.Toast));
 
 		if (this.app.deviceHasCapability(ConnectSDK.Capabilities.Launcher.App.List)) {

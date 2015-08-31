@@ -72,6 +72,14 @@ enyo.kind({
 
 	deviceHasCapability: function (cap) {
 		return !!(this.device && this.device.hasCapability(cap));
+	},
+
+	deviceSupports: function (caps) {
+		return !!(this.device && this.device.supports(caps));
+	},
+
+	deviceSupportsAny: function (caps) {
+		return !!(this.device && this.device.supportsAny(caps));
 	}
 });
 
