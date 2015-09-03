@@ -14,8 +14,13 @@ enyo.kind({
 	kind: "enyo.Controller",
 
 	published: {
-		requestPairing: true // if true, ask for capabilities that require pairing
+		requestPairing: true, // if true, ask for capabilities that require pairing
+		airPlayMirror: true // if true, use mirroring for displaying content on AirPlay
 	},
+
+	bindings: [
+		{from: ".app.$.samplerEventHandler.airPlayMirror", to: ".airPlayMirror", oneWay: true}
+	],
 
 	create: function () {
 		this.inherited(arguments);
@@ -32,10 +37,17 @@ enyo.kind({
 		this.startDiscovery();
 	},
 
+	airPlayMirrorChanged: function () {
+		// SDK currently doesn't support changing this at runtime
+		this.app.showMessage("Notice", "Please restart the app for the AirPlay mirror mode setting to take effect.");
+	},
+
 	startDiscovery: function () {
-		if (window.ConnectSDK) {
+		if (window.ConnectSDK && window.ConnectSDK.discoveryManager) {
 			ConnectSDK.discoveryManager.startDiscovery({
-				pairingLevel: this.requestPairing ? ConnectSDK.PairingLevel.ON : ConnectSDK.PairingLevel.OFF
+				pairingLevel: this.requestPairing ? ConnectSDK.PairingLevel.ON : ConnectSDK.PairingLevel.OFF,
+				airPlayServiceMode: this.airPlayMirror ? ConnectSDK.AirPlayServiceMode.WEBAPP :
+					ConnectSDK.AirPlayServiceMode.MEDIA
 			});
 
 			ConnectSDK.discoveryManager.on("devicefound", this.deviceFound, this);

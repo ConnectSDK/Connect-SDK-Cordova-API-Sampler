@@ -17,6 +17,7 @@ enyo.kind({
 	view: "AppView",
 
 	components: [
+		{name: "samplerEventHandler", kind: "SamplerEventHandler"},
 		{name: "deviceController", kind: "ConnectableDeviceController"},
 		{name: "discoveryController", kind: "DiscoveryManagerController"},
 		{kind: "enyo.Signals", onbackbutton: "handleBack"}
@@ -45,11 +46,15 @@ enyo.kind({
 	},
 
 	showMessage: function (title, message) {
-		this.view.showAlertPopup({title: title, message: message});
+		if (this.view.showAlertPopup) {
+			this.view.showAlertPopup({title: title, message: message});
+		}
 	},
 
 	showToast: function (message) {
-		this.view.showAlertPopup({message: message, timeout: 2});
+		if (this.view.showAlertPopup) {
+			this.view.showAlertPopup({message: message, timeout: 2});
+		}
 	},
 
 	showError: function (err) {
@@ -97,7 +102,6 @@ enyo.kind({
 	},
 
 	components: [
-		{kind: "SamplerEventHandler"},
 		{name: "alertPopup", kind: "onyx.Popup", centered: true, floating: true, components: [
 			{name: "alertTitle"},
 			{name: "alertText", classes: "padded", ontap: "hideAlertPopup"}

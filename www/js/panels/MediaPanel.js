@@ -120,9 +120,27 @@ enyo.kind({
 			this.subscribeVolume();
 		} else {
 			this.$.volumeSlider.addClass("disabled");
+			this.$.volumeSlider.setMin(0);
+			this.$.volumeSlider.setMax(1);
+			this.$.volumeSlider.setValue(0);
 		}
 		if (!this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Seek)) {
+			if (this.getDurationInterval !== null) {
+				clearInterval(this.getDurationInterval);
+			}
+			this.getDurationInterval = null;
+			if (this.getPositionInterval !== null) {
+				clearInterval(this.getPositionInterval);
+			}
+			this.getPositionInterval = null;
+
 			this.$.seekSlider.addClass("disabled");
+			this.$.seekSlider.setMin(0);
+			this.$.seekSlider.setMax(1);
+			this.$.seekSlider.setValue(0);
+			this.$.positionLabel.setContent("--:--");
+			this.$.durationLabel.setContent("--:--");
+			this.$.progressColumns.resized();
 		}
 	},
 

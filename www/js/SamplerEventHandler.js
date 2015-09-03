@@ -56,6 +56,10 @@ enyo.kind({
 		}
 	},
 
+	published: {
+		airPlayMirror: true
+	},
+
 	/*
 		Launch the browser
 		Capabilities: Launcher.Browser, Launcher.Browser.Params
@@ -570,6 +574,7 @@ enyo.kind({
 
 	/*
 		Play a playlist
+		Capabilities: MediaPlayer.Play.Playlist
 	*/
 	handlePlayPlaylist: function (inSender, inEvent) {
 		var url = SamplerEventHandler.playlist.url;
@@ -606,6 +611,7 @@ enyo.kind({
 
 	/*
 		Close the media player
+		Capabilities: MediaPlayer.Close
 	*/
 	handleMediaClose: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.launchSession) {
@@ -631,6 +637,7 @@ enyo.kind({
 
 	/*
 		Resume playback of a paused video/audio/playlist
+		Capabilities: MediaControl.Play
 	*/
 	handleMediaPlay: function (inSender, inEvent) {
 		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
@@ -642,6 +649,7 @@ enyo.kind({
 
 	/*
 		Pause playback of a playing video/audio/playlist
+		Capabilities: MediaControl.Pause
 	*/
 	handleMediaPause: function (inSender, inEvent) {
 		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
@@ -653,6 +661,7 @@ enyo.kind({
 
 	/*
 		Stop playback of a playing video/audio/playlist
+		Capabilities: MediaControl.Stop
 	*/
 	handleMediaStop: function (inSender, inEvent) {
 		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
@@ -664,6 +673,7 @@ enyo.kind({
 
 	/*
 		Rewind a playing video/audio/playlist
+		Capabilities: MediaControl.Rewind
 	*/
 	handleMediaRewind: function (inSender, inEvent) {
 		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
@@ -675,6 +685,7 @@ enyo.kind({
 
 	/*
 		Fast-forward a playing video/audio/playlist
+		Capabilities: MediaControl.FastForward
 	*/
 	handleMediaFastForward: function (inSender, inEvent) {
 		// SamplerEventHandler.mediaPlayer.mediaControl is cached from the response to device.getMediaPlayer().playMedia
@@ -686,6 +697,7 @@ enyo.kind({
 
 	/*
 		Navigate playlist to the previous item
+		Capabilities: PlaylistControl.Previous
 	*/
 	handleMediaPrevious: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.playlistControl) {
@@ -695,6 +707,7 @@ enyo.kind({
 
 	/*
 		Navigate playlist to the next item
+		Capabilities: PlaylistControl.Next
 	*/
 	handleMediaNext: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.playlistControl) {
@@ -704,6 +717,7 @@ enyo.kind({
 
 	/*
 		Navigate playlist to a specific index
+		Capabilities: PlaylistControl.JumpToTrack
 	*/
 	handleMediaJumpToTrack: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.playlistControl) {
@@ -714,6 +728,7 @@ enyo.kind({
 
 	/*
 		Seek the media to a particular time (in seconds)
+		Capabilities: MediaControl.Seek
 	*/
 	handleMediaSeekTo: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.mediaControl) {
@@ -723,6 +738,7 @@ enyo.kind({
 
 	/*
 		Get the duration (in seconds) of the playing media
+		Capabilities: MediaControl.Duration
 	*/
 	handleMediaGetDuration: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.mediaControl) {
@@ -735,6 +751,7 @@ enyo.kind({
 
 	/*
 		Get the position (in seconds) of the playing media
+		Capabilities: MediaControl.Position
 	*/
 	handleMediaGetPosition: function (inSender, inEvent) {
 		if (SamplerEventHandler.mediaPlayer.mediaControl) {
@@ -747,6 +764,7 @@ enyo.kind({
 
 	/*
 		Launch a web app.
+		Capabilities: WebAppLauncher.Launch
 	*/
 	handleLaunchWebApp: function (inSender, inEvent) {
 		this.app.device.getWebAppLauncher().launchWebApp(SamplerEventHandler.webAppId).success(function (session) {
@@ -756,17 +774,17 @@ enyo.kind({
 
 	/*
 		Connect to web app app-to-app session
+		Capabilities: WebAppLauncher.Connect
 	*/
-	handleJoinWebApp: function (inSender, inEvent) {
-		SamplerEventHandler.webAppSession.connect().success(function () {
-			// TODO
-		}, this).error(function (err) {
+	handleConnectWebApp: function (inSender, inEvent) {
+		SamplerEventHandler.webAppSession.connect().success(function () {}, this).error(function (err) {
 			this.app.showError(err);
 		}, this);
 	},
 
 	/*
 		Send a string message to a connected web app
+		Capabilities: WebAppLauncher.Message.Send
 	*/
 	handleSendMessage: function (inSender, inEvent) {
 		if (SamplerEventHandler.webAppSession) {
@@ -780,6 +798,7 @@ enyo.kind({
 
 	/*
 		Send JSON formatted data to a connected web app
+		Capabilities: WebAppLauncher.Message.Send.JSON
 	*/
 	handleSendJSON: function (inSender, inEvent) {
 		if (SamplerEventHandler.webAppSession) {
@@ -793,6 +812,7 @@ enyo.kind({
 
 	/*
 		Close a web app
+		Capabilities: WebAppLauncher.Close
 	*/
 	handleCloseWebApp: function (inSender, inEvent) {
 		if (SamplerEventHandler.webAppSession) {
@@ -806,6 +826,7 @@ enyo.kind({
 
 	/*
 		Leave a web app
+		Capabilities: WebAppLauncher.Disconnect
 	*/
 	handleLeaveWebApp: function (inSender, inEvent) {
 		if (SamplerEventHandler.webAppSession) {
@@ -815,6 +836,7 @@ enyo.kind({
 
 	/*
 		Pin a web app
+		Capabilities: WebAppLauncher.Pin
 	*/
 	handlePinWebApp: function (inSender, inEvent) {
 		this.app.device.getWebAppLauncher().pinWebApp("WebAppTester").error(function (err) {
@@ -824,6 +846,7 @@ enyo.kind({
 
 	/*
 		Unpin a web app
+		Capabilities: WebAppLauncher.Pin
 	*/
 	handleUnpinWebApp: function (inSender, inEvent) {
 		this.app.device.getWebAppLauncher().unPinWebApp("WebAppTester").error(function (err) {
