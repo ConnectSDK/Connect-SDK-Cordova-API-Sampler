@@ -108,8 +108,8 @@ enyo.kind({
 		this.$.rewindButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.Rewind)));
 		this.$.fastForwardButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaControl.FastForward)));
 		this.$.closeButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Close)));
-		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.SRT) || this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.WebVTT)));
-		this.$.subtitlesCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Loop)));
+		this.$.playlistButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Play.Playlist)));
+		this.$.subtitlesCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.SRT) || this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Subtitle.WebVTT)));
 		this.$.loopCheckbox.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.MediaPlayer.Loop)));
 		this.$.previousButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.PlaylistControl.Previous)));
 		this.$.nextButton.setDisabled(!(this.app.deviceHasCapability(ConnectSDK.Capabilities.PlaylistControl.Next)));
