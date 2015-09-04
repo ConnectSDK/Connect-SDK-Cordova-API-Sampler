@@ -476,7 +476,7 @@ enyo.kind({
 
 		var options = {
 			title: SamplerEventHandler.audio.title,
-			iconUrl: SamplerEventHandler.audio.icon,
+			iconUrl: SamplerEventHandler.audio.iconUrl,
 			description: SamplerEventHandler.audio.description,
 			shouldLoop: SamplerEventHandler.audio.shouldLoop
 		};
@@ -508,7 +508,7 @@ enyo.kind({
 
 		var options = {
 			title: SamplerEventHandler.video.title,
-			iconUrl: SamplerEventHandler.video.icon,
+			iconUrl: SamplerEventHandler.video.iconUrl,
 			description: SamplerEventHandler.video.description,
 			shouldLoop: SamplerEventHandler.video.shouldLoop
 		};
@@ -540,7 +540,7 @@ enyo.kind({
 
 		var options = {
 			title: SamplerEventHandler.video.title,
-			iconUrl: SamplerEventHandler.video.icon,
+			iconUrl: SamplerEventHandler.video.iconUrl,
 			description: SamplerEventHandler.video.description,
 			shouldLoop: SamplerEventHandler.video.shouldLoop
 		};
