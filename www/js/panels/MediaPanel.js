@@ -14,7 +14,8 @@ enyo.kind({
 	kind: "CapabilityPanel",
 
 	published: {
-		loopChecked: false
+		loopChecked: false,
+		userInteraction: false
 	},
 
 	getPositionInterval: null,
@@ -81,7 +82,7 @@ enyo.kind({
 					{content: "Seek", style: "text-align: center;", fit: true},
 					{name: "durationLabel", content: "--:--"}
 				]},
-				{name: "seekSlider", kind: "onyx.Slider", classes: "disabled", value: 1, min: 1, style: "width: 90%; margin: 25px auto", onChange: "handleSeekChange"},
+				{name: "seekSlider", kind: "onyx.Slider", classes: "disabled", value: 1, min: 1, style: "width: 90%; margin: 25px auto", onChange: "handleSeekChange", onChanging: "handleSeekChanging", onAnimateFinish: "handleSeekAnimateFinish"},
 				{content: "Volume", style: "width: 100%; text-align: center; margin: 20px auto;"},
 				{name: "volumeSlider", kind: "onyx.Slider", value: 0, min: 0, max: 1, style: "width: 90%; margin: 25px auto", onChange: "handleVolumeChange"}
 			]}
@@ -156,7 +157,9 @@ enyo.kind({
 	},
 
 	handleGetVolumeError: function (err) {
-		this.app.showError(err);
+		if (err.message !== "connection lost") {
+			this.app.showError(err);
+		}
 	},
 
 	handleVolumeChange: function () {
@@ -213,11 +216,9 @@ enyo.kind({
 		enyo.Signals.send("onMediaGetDuration", {callbacks: {success: this.handleGotDuration.bind(this), error: this.handleGetDurationError.bind(this)}});
 	},
 
-	handleGotDuration: function (duration) {
-		this.$.seekSlider.setMax(duration);
-
-		var minutes = Math.floor(duration / 60);
-		var seconds = duration - (minutes * 60);
+	formatTime: function (oldTime) {
+		var minutes = Math.floor(oldTime / 60);
+		var seconds = Math.round(oldTime - (minutes * 60));
 
 		if (minutes < 10) {
 			minutes = "0" + minutes;
@@ -225,9 +226,16 @@ enyo.kind({
 		if (seconds < 10) {
 			seconds = "0" + seconds;
 		}
+
 		var time = minutes + ':' + seconds;
 
-		this.$.durationLabel.setContent(time);
+		return time;
+	},
+
+	handleGotDuration: function (duration) {
+		this.$.seekSlider.setMax(duration);
+
+		this.$.durationLabel.setContent(this.formatTime(duration));
 
 		this.$.progressColumns.resized();
 	},
@@ -240,27 +248,24 @@ enyo.kind({
 		enyo.Signals.send("onMediaSeekTo", {position: this.$.seekSlider.value});
 	},
 
+	handleSeekChanging: function () {
+		this.userInteraction = true;
+	},
+
+	handleSeekAnimateFinish: function() {
+		this.userInteraction = false;
+	},
+
 	handleGetPosition: function () {
 		enyo.Signals.send("onMediaGetPosition", {callbacks: {success: this.handleGotPosition.bind(this), error: this.handleGetPositionError.bind(this)}});
 	},
 
 	handleGotPosition: function (position) {
 		// Only update the position if the user is not interacting with the seek slider
-		if (!this.$.seekSlider.$.knob.hasClass("pressed")) {
+		if (!this.userInteraction && !this.$.seekSlider.$.knob.hasClass("pressed")) {
 			this.$.seekSlider.animateTo(position);
 
-			var minutes = Math.floor(position / 60);
-			var seconds = position - (minutes * 60);
-
-			if (minutes < 10) {
-				minutes = "0" + minutes;
-			}
-			if (seconds < 10) {
-				seconds = "0" + seconds;
-			}
-			var time = minutes + ':' + seconds;
-
-			this.$.positionLabel.setContent(time);
+			this.$.positionLabel.setContent(this.formatTime(position));
 
 			this.$.progressColumns.resized();
 		}

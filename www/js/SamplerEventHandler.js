@@ -130,9 +130,7 @@ enyo.kind({
 		app.device.getLauncher().getAppList().success(function (apps) {
 			// Inputs contains an array of apps
 
-			if (inEvent.callbacks.success) {
-				inEvent.callbacks.success(apps);
-			}
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(apps); }
 		}).error(function (err) {
 			if (inEvent.callbacks.error) {
 				inEvent.callbacks.error(err);
@@ -165,9 +163,7 @@ enyo.kind({
 	handleGetChannelList: function (inSender, inEvent) {
 		app.device.getTVControl().getChannelList().success(function (channels) {
 			// Channels is an array containing the channels list
-			if (inEvent.callbacks.success) {
-				inEvent.callbacks.success(channels);
-			}
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(channels); }
 		})
 	},
 
@@ -203,8 +199,8 @@ enyo.kind({
 	handleGetMute: function (inSender, inEvent) {
 		app.device.getVolumeControl().getMute().success(function (mute) {
 			// 'mute' is a boolean
-			inEvent.callbacks.success(mute);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(mute); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 	},
 
 	/*
@@ -214,8 +210,8 @@ enyo.kind({
 	handleSubscribeMute: function (inSender, inEvent) {
 		var subscription = app.device.getVolumeControl().subscribeMute().success(function (mute) {
 			// 'mute' is a boolean
-			inEvent.callbacks.success(mute);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(mute); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 
 		// You can cancel the subscription with subscription.unsubscribe();
 	},
@@ -236,8 +232,8 @@ enyo.kind({
 	handleGetVolume: function (inSender, inEvent) {
 		app.device.getVolumeControl().getVolume().success(function (volume) {
 			// 'volume' contains the volume as a decimal percentage (e.g. 0.10)
-			inEvent.callbacks.success(volume);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(volume); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 	},
 
 	/*
@@ -247,8 +243,8 @@ enyo.kind({
 	handleSubscribeVolume: function (inSender, inEvent) {
 		var subscription = app.device.getVolumeControl().subscribeVolume().success(function (volume) {
 			// 'volume' contains the volume as a decimal percentage (e.g. 0.10)
-			inEvent.callbacks.success(volume);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(volume); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 
 		// You can cancel the subscription with subscription.unsubscribe();
 	},
@@ -391,7 +387,7 @@ enyo.kind({
 			// Inputs contains an array of external inputs
 
 			if (inEvent.callbacks.success) {
-				inEvent.callbacks.success(inputs);
+				if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(inputs); }
 			}
 		}).error(function (err) {
 			if (inEvent.callbacks.error) {
@@ -494,8 +490,8 @@ enyo.kind({
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = mediaControl && mediaControl.acquire();
 
-			inEvent.callbacks.success(arguments);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(arguments); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 	},
 
 	/*
@@ -526,8 +522,8 @@ enyo.kind({
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = mediaControl && mediaControl.acquire();
 
-			inEvent.callbacks.success(arguments);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(arguments); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 	},
 
 	/*
@@ -568,8 +564,8 @@ enyo.kind({
 			}
 			SamplerEventHandler.mediaPlayer.mediaControl = mediaControl && mediaControl.acquire();
 
-			inEvent.callbacks.success(arguments);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(arguments); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 	},
 
 	/*
@@ -605,8 +601,8 @@ enyo.kind({
 			}
 			SamplerEventHandler.mediaPlayer.playlistControl = playlistControl && playlistControl.acquire();
 
-			inEvent.callbacks.success(arguments);
-		}).error(inEvent.callbacks.error);
+			if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(arguments); }
+		}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 	},
 
 	/*
@@ -744,8 +740,8 @@ enyo.kind({
 		if (SamplerEventHandler.mediaPlayer.mediaControl) {
 			SamplerEventHandler.mediaPlayer.mediaControl.getDuration().success(function (duration) {
 				// 'duration' contains the media duration in seconds;
-				inEvent.callbacks.success(duration);
-			}).error(inEvent.callbacks.error);
+				if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(duration); }
+			}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 		}
 	},
 
@@ -757,8 +753,8 @@ enyo.kind({
 		if (SamplerEventHandler.mediaPlayer.mediaControl) {
 			SamplerEventHandler.mediaPlayer.mediaControl.getPosition().success(function (position) {
 				// 'position' contains the media position in seconds
-				inEvent.callbacks.success(position);
-			}).error(inEvent.callbacks.error);
+				if(inEvent.callbacks && inEvent.callbacks.success) { inEvent.callbacks.success(position); }
+			}).error(function (err) { if (inEvent.callbacks && inEvent.callbacks.error) { inEvent.callbacks.error(err); } });
 		}
 	},
 

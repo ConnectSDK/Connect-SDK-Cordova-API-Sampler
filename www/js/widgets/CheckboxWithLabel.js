@@ -31,7 +31,9 @@ enyo.kind({
 	],
 
 	toggle: function () {
-		this.$.checkbox.setChecked(!this.checked);
+		if (!this.disabled) {
+			this.$.checkbox.setChecked(!this.checked);
+		}
 		return true;
 	}
 });
