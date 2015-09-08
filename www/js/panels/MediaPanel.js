@@ -82,7 +82,7 @@ enyo.kind({
 					{content: "Seek", style: "text-align: center;", fit: true},
 					{name: "durationLabel", content: "--:--"}
 				]},
-				{name: "seekSlider", kind: "onyx.Slider", classes: "disabled", value: 1, min: 1, style: "width: 90%; margin: 25px auto", onChange: "handleSeekChange", onChanging: "handleSeekChanging", onAnimateFinish: "handleSeekAnimateFinish"},
+				{name: "seekSlider", kind: "onyx.Slider", classes: "disabled", value: 1, min: 1, style: "width: 90%; margin: 25px auto", onChange: "handleSeekChange", onmousedown: "handleSeekChanging", ontouchstart: "handleSeekChanging", onAnimateFinish: "handleSeekAnimateFinish"},
 				{content: "Volume", style: "width: 100%; text-align: center; margin: 20px auto;"},
 				{name: "volumeSlider", kind: "onyx.Slider", value: 0, min: 0, max: 1, style: "width: 90%; margin: 25px auto", onChange: "handleVolumeChange"}
 			]}
