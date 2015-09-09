@@ -10,17 +10,17 @@
 //
 
 enyo.depends(
-    "../lib/layout/layout.js",
-    "../lib/layout/layout.css",
-    "../lib/onyx/onyx.js",
-    "../lib/onyx/onyx.css",
-    "../lib/flex/flex.js",
-    "../lib/flex/flex.css",
-    "../css/App.css",
-    "panels",
-    "NavBar.js",
-    "CapabilityPanels.js",
-    "Widgets.js",
-    "AppControllers.js",
-    "App.js"
+	"../lib/layout/layout.js",
+	"../lib/layout/layout.css",
+	"../lib/onyx/onyx.js",
+	"../lib/onyx/onyx.css",
+	"../lib/flex/flex.js",
+	"../lib/flex/flex.css",
+	"../css/App.css",
+	"SamplerEventHandler.js",
+	"widgets",
+	"panels",
+	"controllers",
+	"MainPanel.js",
+	"App.js"
 );

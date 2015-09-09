@@ -9,11 +9,9 @@
 //  work. If not, see http://creativecommons.org/publicdomain/zero/1.0/.
 //
 
-enyo.depends(
-    "AppsPanel.js",
-    "ControlPanel.js",
-    "MediaPanel.js",
-    "SystemPanel.js",
-    "TVPanel.js",
-    "WebAppPanel.js"
-);
+enyo.kind({
+	name: "FittableInputDecorator",
+	kind: "onyx.InputDecorator",
+
+	layoutKind: "enyo.FittableColumnsLayout"
+});

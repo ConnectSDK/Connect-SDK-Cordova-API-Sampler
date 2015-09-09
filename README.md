@@ -8,7 +8,7 @@ For information on Connect SDK, visit [connectsdk.com/about](http://www.connects
 
 ## Requirements
 
-cordova 3.3.0+
+Cordova 5.0+
 
 ## Setup
 
@@ -18,8 +18,17 @@ Refer to https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin/
 
 To update the plugin to the latest version, run
 
-    cordova plugin rm com.connectsdk.cordova.plugin
-    cordova plugin add https://github.com/ConnectSDK/Connect-SDK-Cordova-Plugin.git
+```
+    cordova plugin rm cordova-plugin-connectsdk
+    cordova plugin add cordova-plugin-connectsdk
+```
+
+*If you are updating from a plugin older than 1.6.0, you need to uninstall with the old plugin id, then install with the new plugin id*
+
+```
+    cordova plugin rm com.connectsdk.cordovaplugin
+    cordova plugin add cordova-plugin-connectsdk
+```
 
 ## License
 

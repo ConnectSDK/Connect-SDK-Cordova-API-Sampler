@@ -10,10 +10,15 @@
 //
 
 enyo.depends(
-    "AppsPanel.js",
-    "ControlPanel.js",
-    "MediaPanel.js",
-    "SystemPanel.js",
-    "TVPanel.js",
-    "WebAppPanel.js"
+	"CapabilityPanel.js",
+	"CapabilitySupport.js",
+	"CapabilitySupportList.js",
+	"CheckboxWithLabel.js",
+	"FittableInputDecorator.js",
+	"HeaderWithCapability.js",
+	"NavItem.js",
+	"NavBar.js",
+	"TableButton.js",
+	"TabPanels.js",
+	"Trackpad.js"
 );
