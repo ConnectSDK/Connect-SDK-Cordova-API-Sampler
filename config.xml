@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.connectsdk.cordova-api-sampler" version="1.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.connectsdk.cordova-api-sampler" version="1.6.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Connect-SDK-Cordova-API-Sampler</name>
     <description>
         Example Cordova app to demonstrate Connect SDK APIs.
     </description>
-    <author email="connect@lgsvl.com" href="http://www.connectsdk.com">
+    <author email="support@connectsdk.com" href="http://connectsdk.com/">
         LG Electronics, Inc.
     </author>
     <content src="index.html" />
