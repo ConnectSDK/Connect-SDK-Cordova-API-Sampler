@@ -5,7 +5,8 @@ enyo.kind({
 	statics: {
 		webAppId: {
 			"webOS TV": "SampleWebApp",
-			"Chromecast": "DDCEDE96"
+			"Chromecast": "DDCEDE96",
+			"AirPlay": "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/connect-bridge/"
 		},
 		dialAppId: "Levak",
 		youtubeContentId: "eRsGyueVLvQ",
