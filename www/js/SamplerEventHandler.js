@@ -3,7 +3,10 @@ enyo.kind({
 	name: "SamplerEventHandler",
 
 	statics: {
-		webAppId: "SampleWebApp",
+		webAppId: {
+			"webOS TV": "SampleWebApp",
+			"Chromecast": "DDCEDE96"
+		},
 		dialAppId: "Levak",
 		youtubeContentId: "eRsGyueVLvQ",
 		webAppSession: null,
@@ -763,7 +766,17 @@ enyo.kind({
 		Capabilities: WebAppLauncher.Launch
 	*/
 	handleLaunchWebApp: function (inSender, inEvent) {
-		this.app.device.getWebAppLauncher().launchWebApp(SamplerEventHandler.webAppId).success(function (session) {
+		var webAppId;
+
+		for (var service in SamplerEventHandler.webAppId) {
+			if (!webAppId && SamplerEventHandler.webAppId.hasOwnProperty(service)) {
+				if (this.app.device.hasService(service)) {
+					webAppId = SamplerEventHandler.webAppId[service];
+				}
+			}
+		}
+
+		this.app.device.getWebAppLauncher().launchWebApp(webAppId).success(function (session) {
 			SamplerEventHandler.webAppSession = session.acquire();
 		}, this);
 	},
@@ -917,7 +930,7 @@ enyo.kind({
 		 onMediaGetPosition: "handleMediaGetPosition",
 		 // Web App
 		 onLaunchWebApp: "handleLaunchWebApp",
-		 onJoinWebApp: "handleJoinWebApp",
+		 onJoinWebApp: "handleConnectWebApp",
 		 onSendMessage: "handleSendMessage",
 		 onSendJSON: "handleSendJSON",
 		 onLeaveWebApp: "handleLeaveWebApp",
