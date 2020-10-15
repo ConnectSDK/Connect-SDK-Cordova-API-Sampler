@@ -12,36 +12,36 @@ enyo.kind({
 		youtubeContentId: "eRsGyueVLvQ",
 		webAppSession: null,
 		image: {
-			url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photo.jpg",
+			url: "http://connectsdk.com/ConnectSDK.jpg",
 			mimeType: "image/jpeg",
-			title: "Sintel Character Design",
-			description: "Blender Open Movie Project",
-			iconUrl: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/photoIcon.jpg"
+			title: "Connect SDK",
+			description: "One SDK Eight Media Platforms",
+			iconUrl: "http://connectsdk.com/ConnectSDK_Logo.jpg",
 		},
 		audio: {
-			url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audio.mp3",
+			url: "http://connectsdk.com/ConnectSDK.mp3",
 			mimeType: "audio/mp3",
-			title: "The Song that Doesn't End",
-			description: "Lamb Chop's Play Along",
-			iconUrl: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/audioIcon.jpg",
+			title: "Connect SDK",
+			description: "One SDK Eight Media Platforms",
+			iconUrl: "http://connectsdk.com/ConnectSDK_Logo.jpg",
 			shouldLoop: false
 		},
 		video: {
-			url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/video.mp4",
+			url: "http://connectsdk.com/ConnectSDK.mp4",
 			mimeType: "video/mp4",
-			title: "Sintel Trailer",
-			description: "Blender Open Movie Project",
-			iconUrl: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/videoIcon.jpg",
+			title: "Connect SDK",
+			description: "One SDK Eight Media Platforms",
+			iconUrl: "http://connectsdk.com/ConnectSDK_Logo.jpg",
 			shouldLoop: false,
 			subtitles: {
 				label: "English",
 				language: "en",
 				SRT: {
-					url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/sintel_en.srt",
+					url: "http://connectsdk.com/ConnectSDK.srt",
 					mimeType: "text/srt"
 				},
 				WebVTT: {
-					url: "http://ec2-54-201-108-205.us-west-2.compute.amazonaws.com/samples/media/sintel_en.vtt",
+					url: "http://connectsdk.com/ConnectSDK.vtt",
 					mimeType: "text/vtt"
 				}
 			}
